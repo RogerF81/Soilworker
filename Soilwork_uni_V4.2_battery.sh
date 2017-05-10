@@ -10,7 +10,7 @@
 #Credits: @Alcolawl @soniCron @Asiier @Freak07 @Mostafa Wael @Senthil360 @TotallyAnxious @Eliminater74 @RenderBroken @ZeroInfinity @Kyuubi10 @ivicask
 sleep 30
 echo ----------------------------------------------------
-echo Applying Architects Kernel Tweaks
+echo Applying Soilwork Kernel Tweaks
 echo ----------------------------------------------------
 echo "\m/"
 echo "Let's go"
