@@ -5,7 +5,7 @@ MODDIR=${0%/*}
 
 # This script will be executed in late_start service mode
 # More info in the main Magisk thread
-sleep 60
+sleep 30
 #Disable BCL
 if [ -e "/sys/devices/soc/soc:qcom,bcl/mode" ]; then
 	chmod 644 /sys/devices/soc/soc:qcom,bcl/mode
@@ -39,16 +39,25 @@ if [ -e /sys/devices/system/cpu/cpu0/cpufreq ]; then
     GOV_PATH=/sys/devices/system/cpu/cpu0/cpufreq
 fi
 string1=/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors;
+string1_1=/system/etc/;
+#zzmove_available=false;
 interactive_available=false;
 Pwrutilx_available=false;
 Alucardsched_available=false;
 schedutil_available=false;
+pnp_available=false;
+if [ -e /system/etc/pnp.xml ]; then
+	pnp_available=true;
+fi
 if grep 'interactive' $string1; then
      interactive_available=true;
 fi
 if grep 'pwrutilx' $string1; then
      Pwrutilx_available=true;
 fi
+#if grep 'zzmove' $string1; then
+#	zzmove_available=true;
+#fi
 if grep 'alucardsched' $string1; then
 	Alucardsched_available=true;
 fi
@@ -63,16 +72,9 @@ if [ "$Pwrutilx_available" == "true" ]; then
 		#echo 512 > /dev/cpuctl/foreground/cpu.capacity_max
 		#echo 256 > /dev/cpuctl/system-background/cpu.capacity_max
 		#echo 341 > /dev/cpuctl/top-app/cpu.capacity_min
-		echo 2-3 > /dev/cpuset/top-app/cpus
-		echo 2-3 > /dev/cpuset/foreground/boost/cpus
-		echo 2-3 > /dev/cpuset/foreground/cpus
-		echo 0-1 > /dev/cpuset/background/cpus
-		echo 0-1 > /dev/cpuset/system-background/cpus
 		echo 56 > /proc/sys/kernel/sched_nr_migrate
 		echo -100 > /dev/stune/schedtune.boost
 		echo -100 > /dev/stune/background/schedtune.boost
-		echo 0 > /dev/stune/foreground/schedtune.boost
-		echo 7 > /dev/stune/top-app/schedtune.boost
 		echo 1 > /dev/stune/foreground/schedtune.prefer_idle
 		echo 1 > /dev/stune/top-app/schedtune.prefer_idle
 		echo 0 > /proc/sys/kernel/sched_child_runs_first
@@ -134,19 +136,12 @@ if [ "$Pwrutilx_available" == "false" ] && [ "$Alucardsched_available" == "false
 fi
 if [ "$schedutil_available" == "false" ]; then
     if [ -e $string1 ]; then
-		echo 67 422400:49 480000:56 556800:68 652800:76 729600:81 844800:84 960000:89 1036800:87 1111300:84 1190400:7 1228800:86 1324800:92 1478400:99 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-		echo 120000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_slack
-		chmod 644 /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
-		echo 120000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
-		chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
-		echo 652800 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
-		echo 0 652800:40000 1111300:120000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/above_hispeed_delay
-		echo 99 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/go_hispeed_load
+		echo Tweaking HMP Scheduler
 		echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
 		echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
 		echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/ignore_hispeed_on_notif
 		echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/boost
-		echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/fast_ramp_down
+		echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/fast_ramp_down
 		echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/align_windows
 		echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_migration_notif
 		echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_sched_load
@@ -155,26 +150,26 @@ if [ "$schedutil_available" == "false" ]; then
 		echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/enable_prediction
 		chmod 644 /sys/module/workqueue/parameters/power_efficient
 		echo Y > /sys/module/workqueue/parameters/power_efficient 
-		echo 90 > /proc/sys/kernel/sched_upmigrate
-		echo 65 > /proc/sys/kernel/sched_downmigrate
+		echo 50 > /proc/sys/kernel/sched_upmigrate
+		echo 15 > /proc/sys/kernel/sched_downmigrate
 		echo 15 > /proc/sys/kernel/sched_small_wakee_task_load
-		echo 25 > /proc/sys/kernel/sched_init_task_load
+		echo 20 > /proc/sys/kernel/sched_init_task_load
 		if [ -e "/proc/sys/kernel/sched_heavy_task" ]; then
-			echo 95 > /proc/sys/kernel/sched_heavy_task
+			echo 45 > /proc/sys/kernel/sched_heavy_task
 		fi
 		if [ -e "/proc/sys/kernel/sched_enable_power_aware" ]; then
 			echo 1 > /proc/sys/kernel/sched_enable_power_aware
 		fi
 		echo 1 > /proc/sys/kernel/sched_enable_thread_grouping
-		echo 30 > /proc/sys/kernel/sched_big_waker_task_load
+		echo 5 > /proc/sys/kernel/sched_big_waker_task_load
 		if [ -e "/proc/sys/kernel/sched_small_task" ]; then
-			echo 7 > /proc/sys/kernel/sched_small_task
+			echo 1 > /proc/sys/kernel/sched_small_task
 		fi
 		echo 2 > /proc/sys/kernel/sched_window_stats_policy
 		echo 4 > /proc/sys/kernel/sched_ravg_hist_size
 		echo 9 > /proc/sys/kernel/sched_upmigrate_min_nice
 		echo 3 > /proc/sys/kernel/sched_spill_nr_run
-		echo 97 > /proc/sys/kernel/sched_spill_load
+		echo 55 > /proc/sys/kernel/sched_spill_load
 		echo 1 > /proc/sys/kernel/sched_enable_thread_grouping
 		echo 0 > /proc/sys/kernel/sched_restrict_cluster_spill
 		echo 110 > /proc/sys/kernel/sched_wakeup_load_threshold
@@ -193,8 +188,29 @@ if [ "$schedutil_available" == "false" ]; then
 		if [ -e "/proc/sys/kernel/sched_boost" ]; then
 			echo 0 > /proc/sys/kernel/sched_boost
 		fi
+		if [ "pnp_available" == "false" ]; then
+			echo interactive will be set on LITTLE cluster
+			echo 67 422400:49 480000:56 556800:68 652800:76 729600:81 844800:84 960000:89 1036800:87 1111300:84 1190400:7 1228800:86 1324800:92 1478400:99 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+			echo 120000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_slack
+			chmod 644 /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
+			echo 120000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
+			echo 652800 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
+			echo 0 652800:40000 1111300:120000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/above_hispeed_delay
+			echo 400 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/go_hispeed_load
+		else
+			echo PnP detected! Tweaks will be set accordingly
+			echo 67 1228800:86 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+		fi
 	fi
 fi
+#if [ "$schedutil_available" == "false" ] && [ "$zzmove_available" == "true" ]; then
+#	if [ -e $string1 ]; then
+#		echo zzmove will be set on LITTLE cluster
+#		if [ -e /sys/devices/system/cpu/cpu0/cpufreq/zzmoove/profile_number ]; then
+#			echo 2 > /sys/devices/system/cpu/cpu0/cpufreq/zzmoove/profile_number
+#		fi
+#	fi
+#fi
 fi
 #Apply settings to Big cluster
 if [ -d /sys/devices/system/cpu/cpu2/cpufreq ]; then
@@ -235,14 +251,7 @@ if [ "$Pwrutilx_available_big" == "false" ] && [ "$Alucardsched_available_big" =
 fi
 if [ "$schedutil_available_big" == "false" ]; then
     if [ -e $string2 ]; then
-		echo interactive > $GOV_big_PATH/scaling_governor
-		echo 58 556800:58 652800:78 729600:80 806400:84 883200:77 940800:82 1036800:86 1113600:84 1190400:87 1248000:88 1324800:90 1785600:96 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/target_loads
-		echo 120000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_slack
-		echo 1248000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/hispeed_freq
-		echo 120000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_rate
-		echo 0 652800:80000 1248000:120000> /sys/devices/system/cpu/cpu2/cpufreq/interactive/above_hispeed_delay
-		echo 400 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/go_hispeed_load
-		echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/min_sample_time
+		echo 40000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/min_sample_time
 		echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/max_freq_hysteresis
 		echo 1 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/ignore_hispeed_on_notif
 		echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/boost
@@ -253,6 +262,19 @@ if [ "$schedutil_available_big" == "false" ]; then
 		echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/boostpulse_duration
 		echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/io_is_busy
 		echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/enable_prediction
+		if [ "pnp_available" == "false" ]; then
+			echo interactive will be set on big cluster
+			echo interactive > $GOV_big_PATH/scaling_governor
+			echo 58 556800:58 652800:78 729600:80 806400:84 883200:77 940800:82 1036800:86 1113600:84 1190400:87 1248000:88 1324800:90 1785600:96 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/target_loads
+			echo 120000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_slack
+			echo 1248000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/hispeed_freq
+			echo 80000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_rate
+			echo 0 652800:80000 1248000:120000> /sys/devices/system/cpu/cpu2/cpufreq/interactive/above_hispeed_delay
+			echo 81 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/go_hispeed_load
+		else
+			echo PnP detected! Tweaks will be set accordingly
+			echo 58 1248000:88 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+		fi
     fi
 fi
 fi
@@ -286,25 +308,57 @@ if [ -e "/sys/power/pnpmgr/touch_boost" ]; then
 fi
 #I/0 Tweaks
 echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
-echo "maple" > /sys/block/mmcblk0/queue/scheduler
-echo 8 > /sys/block/mmcblk0/queue/iosched/fifo_batch
-echo 1 > /sys/block/mmcblk0/queue/iosched/writes_starved
+echo "bfq" > /sys/block/mmcblk0/queue/scheduler
+echo 16384 > /sys/block/mmcblk0/queue/iosched/back_seek_max
+echo 1 > /sys/block/mmcblk0/queue/iosched/back_seek_penalty
+echo 250 > /sys/block/mmcblk0/queue/iosched/fifo_expire_async
+echo 120 > /sys/block/mmcblk0/queue/iosched/fifo_expire_sync
+echo 1 > /sys/block/mmcblk0/queue/iosched/low_latency
+echo 0 > /sys/block/mmcblk0/queue/iosched/max_budget
+echo 4 > /sys/block/mmcblk0/queue/iosched/max_budget_async_rq
+echo 0 > /sys/block/mmcblk0/queue/iosched/slice_idle
+echo 40 > /sys/block/mmcblk0/queue/iosched/timeout_async
+echo 120 > /sys/block/mmcblk0/queue/iosched/timeout_sync
+echo 20 > /sys/block/mmcblk0/queue/iosched/wr_coeff
+echo 7000 > /sys/block/mmcblk0/queue/iosched/wr_max_softrt_rate
+echo 2250 > /sys/block/mmcblk0/queue/iosched/wr_max_time
+echo 2000 > /sys/block/mmcblk0/queue/iosched/wr_min_idle_time
+echo 500 > /sys/block/mmcblk0/queue/iosched/wr_min_inter_arr_async
+echo 300 > /sys/block/mmcblk0/queue/iosched/wr_rt_max_time
 echo 0 > /sys/block/mmcblk0/queue/add_random
 echo 0 > /sys/block/mmcblk0/queue/iostats
 echo 1 > /sys/block/mmcblk0/queue/nomerges
-echo 128 > /sys/block/mmcblk0/queue/nr_requests
 echo 0 > /sys/block/mmcblk0/queue/rotational
-echo 2 > /sys/block/mmcblk0/queue/rq_affinity
+echo 1 > /sys/block/mmcblk1/queue/rq_affinity
 echo 1024 > /sys/block/mmcblk1/bdi/read_ahead_kb
 echo "bfq" > /sys/block/mmcblk1/queue/scheduler
+echo 16384 > /sys/block/mmcblk1/queue/iosched/back_seek_max
+echo 1 > /sys/block/mmcblk1/queue/iosched/back_seek_penalty
+echo 250 > /sys/block/mmcblk1/queue/iosched/fifo_expire_async
+echo 120 > /sys/block/mmcblk1/queue/iosched/fifo_expire_sync
+echo 1 > /sys/block/mmcblk1/queue/iosched/low_latency
+echo 0 > /sys/block/mmcblk1/queue/iosched/max_budget
+echo 4 > /sys/block/mmcblk1/queue/iosched/max_budget_async_rq
+echo 0 > /sys/block/mmcblk1/queue/iosched/slice_idle
+echo 40 > /sys/block/mmcblk1/queue/iosched/timeout_async
+echo 120 > /sys/block/mmcblk1/queue/iosched/timeout_sync
+echo 20 > /sys/block/mmcblk1/queue/iosched/wr_coeff
+echo 7000 > /sys/block/mmcblk1/queue/iosched/wr_max_softrt_rate
+echo 2250 > /sys/block/mmcblk1/queue/iosched/wr_max_time
+echo 2000 > /sys/block/mmcblk1/queue/iosched/wr_min_idle_time
+echo 500 > /sys/block/mmcblk1/queue/iosched/wr_min_inter_arr_async
+echo 300 > /sys/block/mmcblk1/queue/iosched/wr_rt_max_time
 echo 0 > /sys/block/mmcblk1/queue/add_random
 echo 0 > /sys/block/mmcblk1/queue/iostats
 echo 1 > /sys/block/mmcblk1/queue/nomerges
-echo 128 > /sys/block/mmcblk1/queue/nr_requests
 echo 0 > /sys/block/mmcblk1/queue/rotational
 echo 1 > /sys/block/mmcblk1/queue/rq_affinity
 #TCP tweaks
-echo westwood > /proc/sys/net/ipv4/tcp_congestion_control
+if grep 'illinois' /proc/sys/net/ipv4/tcp_congestion_control; then
+	echo illinois > /proc/sys/net/ipv4/tcp_congestion_control
+else
+	echo westwood > /proc/sys/net/ipv4/tcp_congestion_control
+fi
 echo 2 > /proc/sys/net/ipv4/tcp_ecn
 echo 1 > /proc/sys/net/ipv4/tcp_dsack
 echo 0 > /proc/sys/net/ipv4/tcp_low_latency
@@ -442,24 +496,35 @@ echo 4096 > /proc/sys/vm/min_free_kbytes
 echo 128 > /proc/sys/kernel/random/read_wakeup_threshold
 echo 896 > /proc/sys/kernel/random/write_wakeup_threshold
 ## Block rpmb
-echo "maple" > /sys/block/mmcblk0rpmb/queue/scheduler
-#echo 8 > /sys/block/mmcblk0rpmb/queue/iosched/fifo_batch
-#echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/front_merges
-#echo 250 > /sys/block/mmcblk0rpmb/queue/iosched/read_expire
-#echo 2500 > /sys/block/mmcblk0rpmb/queue/iosched/write_expire
-#echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/writes_starved
 echo 0 > /sys/block/mmcblk0rpmb/queue/add_random
 echo 0 > /sys/block/mmcblk0rpmb/queue/iostats
 echo 1 > /sys/block/mmcblk0rpmb/queue/nomerges
 echo 0 > /sys/block/mmcblk0rpmb/queue/rotational
-echo 2 > /sys/block/mmcblk0rpmb/queue/rq_affinity
+echo 1 > /sys/block/mmcblk0rpmb/queue/rq_affinity
+echo "bfq" > /sys/block/mmcblk0rpmb/queue/scheduler
+echo 16384 > /sys/block/mmcblk0rpmb/queue/iosched/back_seek_max
+echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/back_seek_penalty
+echo 250 > /sys/block/mmcblk0rpmb/queue/iosched/fifo_expire_async
+echo 120 > /sys/block/mmcblk0rpmb/queue/iosched/fifo_expire_sync
+echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/low_latency
+echo 0 > /sys/block/mmcblk0rpmb/queue/iosched/max_budget
+echo 4 > /sys/block/mmcblk0rpmb/queue/iosched/max_budget_async_rq
+echo 0 > /sys/block/mmcblk0rpmb/queue/iosched/slice_idle
+echo 40 > /sys/block/mmcblk0rpmb/queue/iosched/timeout_async
+echo 120 > /sys/block/mmcblk0rpmb/queue/iosched/timeout_sync
+echo 20 > /sys/block/mmcblk0rpmb/queue/iosched/wr_coeff
+echo 7000 > /sys/block/mmcblk0rpmb/queue/iosched/wr_max_softrt_rate
+echo 2250 > /sys/block/mmcblk0rpmb/queue/iosched/wr_max_time
+echo 2000 > /sys/block/mmcblk0rpmb/queue/iosched/wr_min_idle_time
+echo 500 > /sys/block/mmcblk0rpmb/queue/iosched/wr_min_inter_arr_async
+echo 300 > /sys/block/mmcblk0rpmb/queue/iosched/wr_rt_max_time
 ## Block loop
 for i in /sys/block/loop*; do
    echo 0 > $i/queue/add_random
    echo 0 > $i/queue/iostats
    echo 1 > $i/queue/nomerges
    echo 0 > $i/queue/rotational
-   echo 2 > $i/queue/rq_affinity
+   echo 1 > $i/queue/rq_affinity
 done
 ## Block ram
 for j in /sys/block/ram*; do
@@ -467,7 +532,7 @@ for j in /sys/block/ram*; do
    echo 0 > $j/queue/iostats
    echo 1 > $j/queue/nomerges
    echo 0 > $j/queue/rotational
-   echo 2 > $j/queue/rq_affinity
+   echo 1 > $j/queue/rq_affinity
 done
 ## Charging 
 echo "0" > /sys/kernel/fast_charge/force_fast_charge
