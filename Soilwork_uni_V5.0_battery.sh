@@ -196,10 +196,9 @@ if [ "$schedutil_available" == "false" ]; then
 		if [ "pnp_available" == "false" ]; then
 			echo interactive will be set on LITTLE cluster
 			echo 70 422400:50 480000:57 556800:69 652800:78 729600:83 844800:86 960000:91 1036800:89 1111300:86 1190400:7 1228800:88 1324800:94 1478400:99 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-			echo 150000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_slack
+			echo 384050 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_slack
 			chmod 644 /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
-			echo 166666 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
-			chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
+			echo 40000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
 			echo 422400 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 			echo 0 422400:120000 844800:150000 1111300:175000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/above_hispeed_delay
 			echo 400 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/go_hispeed_load
@@ -276,9 +275,9 @@ if [ "$schedutil_available_big" == "false" ]; then
 			echo interactive will be set on big cluster
 			echo interactive > $GOV_big_PATH/scaling_governor
 			echo 76 556800:59 652800:74 729600:76 806400:80 883200:74 940800:78 1036800:82 1113600:81 1190400:83 1248000:84 1324800:86 1785600:91 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/target_loads
-			echo 150000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_slack
+			echo 192025 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_slack
 			echo 556800 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/hispeed_freq
-			echo 100000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_rate
+			echo 40000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_rate
 			echo 0 556800:100000 1248000:180000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/above_hispeed_delay
 			echo 79 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/go_hispeed_load
 			echo 25000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/min_sample_time
