@@ -191,9 +191,9 @@ if [ "$schedutil_available" == "false" ]; then
 		if [ "pnp_available" == "false" ]; then
 			echo interactive will be set on LITTLE cluster
 			echo 67 422400:49 480000:56 556800:68 652800:76 729600:81 844800:84 960000:89 1036800:87 1111300:84 1190400:7 1228800:86 1324800:92 1478400:99 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-			echo 120000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_slack
+			echo 356940 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_slack
 			chmod 644 /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
-			echo 120000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
+			echo 20000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
 			echo 652800 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 			echo 0 652800:40000 1111300:120000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/above_hispeed_delay
 			echo 400 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/go_hispeed_load
@@ -266,9 +266,9 @@ if [ "$schedutil_available_big" == "false" ]; then
 			echo interactive will be set on big cluster
 			echo interactive > $GOV_big_PATH/scaling_governor
 			echo 58 556800:58 652800:78 729600:80 806400:84 883200:77 940800:82 1036800:86 1113600:84 1190400:87 1248000:88 1324800:90 1785600:96 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/target_loads
-			echo 120000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_slack
+			echo 178470 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_slack
 			echo 1248000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/hispeed_freq
-			echo 80000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_rate
+			echo 20000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_rate
 			echo 0 652800:80000 1248000:120000> /sys/devices/system/cpu/cpu2/cpufreq/interactive/above_hispeed_delay
 			echo 81 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/go_hispeed_load
 		else
