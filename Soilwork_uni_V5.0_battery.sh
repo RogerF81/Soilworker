@@ -377,20 +377,11 @@ fi
 if [ -e "/sys/module/wakeup/parameters/enable_ipa_ws" ]; then
 	echo N > /sys/module/wakeup/parameters/enable_ipa_ws
 fi
-if [ -e "/sys/module/wakeup/parameters/enable_netlink_ws" ]; then
-	echo N > /sys/module/wakeup/parameters/enable_netlink_ws
-fi
 if [ -e "/sys/module/wakeup/parameters/enable_wlan_extscan_wl_ws" ]; then
 	echo N > /sys/module/wakeup/parameters/enable_wlan_extscan_wl_ws
 fi
 if [ -e "/sys/module/wakeup/parameters/enable_qcom_rx_wakelock_ws" ]; then
 	echo N > /sys/module/wakeup/parameters/enable_qcom_rx_wakelock_ws
-fi
-if [ -e "/sys/module/wakeup/parameters/enable_timerfd_ws" ]; then
-	echo N > /sys/module/wakeup/parameters/enable_timerfd_ws
-fi
-if [ -e "/sys/module/wakeup/parameters/enable_wlan_ws" ]; then
-	echo N > /sys/module/wakeup/parameters/enable_wlan_ws
 fi
 ## Thermal
 if [ -e "/sys/module/msm_thermal" ]; then
