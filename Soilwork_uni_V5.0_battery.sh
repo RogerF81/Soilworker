@@ -6,7 +6,7 @@
 #SoC: Snapdragon 820
 #Build Status: stable
 #Version: 5.0
-#Last Updated: 06/xx/2017
+#Last Updated: 06/17/2017
 #Credits: @Alcolawl @soniCron @Asiier @Freak07 @Mostafa Wael @Senthil360 @TotallyAnxious @Eliminater74 @RenderBroken @ZeroInfinity @Kyuubi10 @ivicask
 sleep 30
 echo ----------------------------------------------------
@@ -34,7 +34,6 @@ echo 1 > /sys/devices/system/cpu/cpu0/online
 echo 1 > /sys/devices/system/cpu/cpu1/online
 echo 1 > /sys/devices/system/cpu/cpu2/online
 echo 1 > /sys/devices/system/cpu/cpu3/online
-chmod 444 /sys/devices/system/cpu/online
 chmod 644 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 echo 1593600 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 chmod 644 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
@@ -83,7 +82,7 @@ if [ "$Pwrutilx_available" == "true" ]; then
 		#echo 341 > /dev/cpuctl/foreground/cpu.capacity_max
 		#echo 128 > /dev/cpuctl/system-background/cpu.capacity_max
 		#echo 256 > /dev/cpuctl/top-app/cpu.capacity_min
-		echo 48 > /proc/sys/kernel/sched_nr_migrate
+		echo 72 > /proc/sys/kernel/sched_nr_migrate
 		echo -100 > /dev/stune/schedtune.boost
 		echo -100 > /dev/stune/background/schedtune.boost
 		echo 1 > /dev/stune/foreground/schedtune.prefer_idle
@@ -99,7 +98,7 @@ if [ "$Pwrutilx_available" == "false" ] && [ "$Alucardsched_available" == "true"
 		echo alucardsched > $GOV_PATH/scaling_governor
 		chmod 664 /dev/stune/top-app/schedtune.boost
 		echo 0 > /dev/stune/top-app/schedtune.boost
-		echo 16 > /proc/sys/kernel/sched_nr_migrate
+		echo 36 > /proc/sys/kernel/sched_nr_migrate
 		echo 1 > /dev/stune/foreground/schedtune.prefer_idle
 		echo 1 > /dev/stune/top-app/schedtune.prefer_idle
 		if [ -e "/proc/sys/kernel/sched_autogroup_enabled" ]; then
@@ -122,7 +121,7 @@ if [ "$Pwrutilx_available" == "false" ] && [ "$Alucardsched_available" == "false
 		echo schedutil > $GOV_PATH/scaling_governor
 		chmod 664 /dev/stune/top-app/schedtune.boost
 		echo 5 > /dev/stune/top-app/schedtune.boost
-		echo 24 > /proc/sys/kernel/sched_nr_migrate
+		echo 48 > /proc/sys/kernel/sched_nr_migrate
 		echo 1 > /dev/stune/foreground/schedtune.prefer_idle
 		echo 1 > /dev/stune/top-app/schedtune.prefer_idle
 		if [ -e "/proc/sys/kernel/sched_autogroup_enabled" ]; then
@@ -318,25 +317,19 @@ if [ -e "/sys/power/pnpmgr/touch_boost" ]; then
 	echo 0 > /sys/power/pnpmgr/touch_boost
 fi
 #I/0 Tweaks
-echo Changing and tweaking I/0 scheduler
 echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
-echo "deadline" > /sys/block/mmcblk0/queue/scheduler
+echo "maple" > /sys/block/mmcblk0/queue/scheduler
 echo 8 > /sys/block/mmcblk0/queue/iosched/fifo_batch
-echo 1 > /sys/block/mmcblk0/queue/iosched/front_merges
-echo 250 > /sys/block/mmcblk0/queue/iosched/read_expire
-echo 2500 > /sys/block/mmcblk0/queue/iosched/write_expire
 echo 1 > /sys/block/mmcblk0/queue/iosched/writes_starved
 echo 0 > /sys/block/mmcblk0/queue/add_random
 echo 0 > /sys/block/mmcblk0/queue/iostats
 echo 1 > /sys/block/mmcblk0/queue/nomerges
+echo 128 > /sys/block/mmcblk0/queue/nr_requests
 echo 0 > /sys/block/mmcblk0/queue/rotational
 echo 1 > /sys/block/mmcblk0/queue/rq_affinity
 echo 1024 > /sys/block/mmcblk1/bdi/read_ahead_kb
-echo "deadline" > /sys/block/mmcblk1/queue/scheduler
+echo "maple" > /sys/block/mmcblk1/queue/scheduler
 echo 8 > /sys/block/mmcblk1/queue/iosched/fifo_batch
-echo 1 > /sys/block/mmcblk1/queue/iosched/front_merges
-echo 250 > /sys/block/mmcblk1/queue/iosched/read_expire
-echo 2500 > /sys/block/mmcblk1/queue/iosched/write_expire
 echo 1 > /sys/block/mmcblk1/queue/iosched/writes_starved
 echo 0 > /sys/block/mmcblk1/queue/add_random
 echo 0 > /sys/block/mmcblk1/queue/iostats
@@ -344,11 +337,7 @@ echo 1 > /sys/block/mmcblk1/queue/nomerges
 echo 0 > /sys/block/mmcblk1/queue/rotational
 echo 1 > /sys/block/mmcblk1/queue/rq_affinity
 #TCP tweaks
-if grep 'illinois' /proc/sys/net/ipv4/tcp_congestion_control; then
-	echo illinois > /proc/sys/net/ipv4/tcp_congestion_control
-else
-	echo westwood > /proc/sys/net/ipv4/tcp_congestion_control
-fi
+echo westwood > /proc/sys/net/ipv4/tcp_congestion_control
 echo 2 > /proc/sys/net/ipv4/tcp_ecn
 echo 1 > /proc/sys/net/ipv4/tcp_dsack
 echo 0 > /proc/sys/net/ipv4/tcp_low_latency
@@ -477,11 +466,8 @@ echo 4096 > /proc/sys/vm/min_free_kbytes
 echo 256 > /proc/sys/kernel/random/read_wakeup_threshold
 echo 512 > /proc/sys/kernel/random/write_wakeup_threshold
 ## Block rpmb
-echo "deadline" > /sys/block/mmcblk0rpmb/queue/scheduler
+echo "maple" > /sys/block/mmcblk0rpmb/queue/scheduler
 echo 8 > /sys/block/mmcblk0rpmb/queue/iosched/fifo_batch
-echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/front_merges
-echo 250 > /sys/block/mmcblk0rpmb/queue/iosched/read_expire
-echo 2500 > /sys/block/mmcblk0rpmb/queue/iosched/write_expire
 echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/writes_starved
 echo 0 > /sys/block/mmcblk0rpmb/queue/add_random
 echo 0 > /sys/block/mmcblk0rpmb/queue/iostats
