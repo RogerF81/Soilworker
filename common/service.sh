@@ -72,7 +72,7 @@ if [ "$Pwrutilx_available" == "true" ]; then
 		#echo 512 > /dev/cpuctl/foreground/cpu.capacity_max
 		#echo 256 > /dev/cpuctl/system-background/cpu.capacity_max
 		#echo 341 > /dev/cpuctl/top-app/cpu.capacity_min
-		echo 56 > /proc/sys/kernel/sched_nr_migrate
+		echo 96 > /proc/sys/kernel/sched_nr_migrate
 		echo -100 > /dev/stune/schedtune.boost
 		echo -100 > /dev/stune/background/schedtune.boost
 		echo 1 > /dev/stune/foreground/schedtune.prefer_idle
@@ -90,7 +90,7 @@ if [ "$Pwrutilx_available" == "false" ] && [ "$Alucardsched_available" == "true"
 		echo alucardsched > $GOV_PATH/scaling_governor
 		chmod 664 /dev/stune/top-app/schedtune.boost
 		echo 3 > /dev/stune/top-app/schedtune.boost
-		echo 24 > /proc/sys/kernel/sched_nr_migrate
+		echo 48 > /proc/sys/kernel/sched_nr_migrate
 		echo 1 > /dev/stune/foreground/schedtune.prefer_idle
 		echo 1 > /dev/stune/top-app/schedtune.prefer_idle
 		if [ -e "/proc/sys/kernel/sched_autogroup_enabled" ]; then
@@ -115,7 +115,7 @@ if [ "$Pwrutilx_available" == "false" ] && [ "$Alucardsched_available" == "false
 		echo schedutil > $GOV_PATH/scaling_governor
 		chmod 664 /dev/stune/top-app/schedtune.boost
 		echo 5 > /dev/stune/top-app/schedtune.boost
-		echo 36 > /proc/sys/kernel/sched_nr_migrate
+		echo 56 > /proc/sys/kernel/sched_nr_migrate
 		echo 1 > /dev/stune/foreground/schedtune.prefer_idle
 		echo 1 > /dev/stune/top-app/schedtune.prefer_idle
 		if [ -e "/proc/sys/kernel/sched_autogroup_enabled" ]; then
