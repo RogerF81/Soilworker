@@ -1,10 +1,8 @@
 ##########################################################################################
 #
-# Magisk
+# Magisk Module Template Config Script
 # by topjohnwu
 # 
-# This is a template zip for developers
-#
 ##########################################################################################
 ##########################################################################################
 # 
@@ -50,7 +48,7 @@ LATESTARTSERVICE=true
 
 print_modname() {
   ui_print "*******************************"
-  ui_print "   Unified Magisk EAS/HMP Magisk module for SD820/821 devices   "
+  ui_print "     Unified Magisk EAS/HMP Magisk module for SD820/821 devices     "
   ui_print "*******************************"
 }
 
