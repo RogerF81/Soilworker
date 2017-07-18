@@ -5,9 +5,26 @@ MODDIR=${0%/*}
 
 # This script will be executed in late_start service mode
 # More info in the main Magisk thread
+#!/system/bin/sh
+#Original author: Alcolawl
+#Settings By: RogerF81
+#Device: HTC 10 (perfume)
+#Codename: Soilworker_UNI
+#SoC: Snapdragon 820
+#Build Status: stable
+#Version: 6.0
+#Last Updated: 07/17/2017
+#Credits: @Alcolawl @soniCron @Asiier @Freak07 @Mostafa Wael @Senthil360 @TotallyAnxious @Eliminater74 @RenderBroken @ZeroInfinity @Kyuubi10 @ivicask
 sleep 30
+echo ----------------------------------------------------
+echo Applying Architects Kernel Tweaks
+echo ----------------------------------------------------
+echo "\m/"
+echo "Let's go"
+
 #Disable BCL
 if [ -e "/sys/devices/soc/soc:qcom,bcl/mode" ]; then
+echo Disabling BCL and Removing Perfd
 	chmod 644 /sys/devices/soc/soc:qcom,bcl/mode
 	echo -n disable > /sys/devices/soc/soc:qcom,bcl/mode
 fi
@@ -24,7 +41,6 @@ echo 1 > /sys/devices/system/cpu/cpu0/online
 echo 1 > /sys/devices/system/cpu/cpu1/online
 echo 1 > /sys/devices/system/cpu/cpu2/online
 echo 1 > /sys/devices/system/cpu/cpu3/online
-chmod 444 /sys/devices/system/cpu/online
 chmod 644 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 echo 1593600 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 chmod 644 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
@@ -34,6 +50,7 @@ echo 2150400 > /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq
 chmod 644 /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq
 echo 307200 > /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq
 #Apply settings to LITTLE cluster
+echo Changing governor at LITTLE cluster
 if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 if [ -e /sys/devices/system/cpu/cpu0/cpufreq ]; then
     GOV_PATH=/sys/devices/system/cpu/cpu0/cpufreq
@@ -42,55 +59,29 @@ string1=/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors;
 string1_1=/system/etc/;
 #zzmove_available=false;
 interactive_available=false;
-Pwrutilx_available=false;
-Alucardsched_available=false;
+pwrutilx_available=false;
 schedutil_available=false;
 pnp_available=false;
 if [ -e /system/etc/pnp.xml ]; then
 	pnp_available=true;
 fi
 if grep 'interactive' $string1; then
-     interactive_available=true;
-fi
-if grep 'pwrutilx' $string1; then
-     Pwrutilx_available=true;
+    interactive_available=true;
 fi
 #if grep 'zzmove' $string1; then
 #	zzmove_available=true;
 #fi
-if grep 'alucardsched' $string1; then
-	Alucardsched_available=true;
+if grep 'pwrutilx' $string1; then
+	pwrutilx_available=true;
 fi
 if grep 'schedutil' $string1; then
 	schedutil_available=true;
 fi
-if [ "$Pwrutilx_available" == "true" ]; then
-    if [ -e $string1 ]; then
-		echo echo pwrutilx will be set on LITTLE cluster
+if [ "$pwrutilx_available" == "true" ]; then
+	if [ -e $string1 ]; then
+		echo setting pwrutilx
 		echo pwrutilx > $GOV_PATH/scaling_governor
-		#echo 128 > /dev/cpuctl/background/cpu.capacity_max
-		#echo 512 > /dev/cpuctl/foreground/cpu.capacity_max
-		#echo 256 > /dev/cpuctl/system-background/cpu.capacity_max
-		#echo 341 > /dev/cpuctl/top-app/cpu.capacity_min
 		echo 96 > /proc/sys/kernel/sched_nr_migrate
-		echo -100 > /dev/stune/schedtune.boost
-		echo -100 > /dev/stune/background/schedtune.boost
-		echo 1 > /dev/stune/foreground/schedtune.prefer_idle
-		echo 1 > /dev/stune/top-app/schedtune.prefer_idle
-		echo 0 > /proc/sys/kernel/sched_child_runs_first
-		echo 1 > /proc/sys/kernel/sched_cstate_aware
-		chmod 664 /proc/sys/kernel/sched_cfs_boost
-		echo -100 > /proc/sys/kernel/sched_cfs_boost
-		echo 0 > /proc/sys/kernel/sched_initial_task_util
-    fi
-fi
-if [ "$Pwrutilx_available" == "false" ] && [ "$Alucardsched_available" == "true" ]; then
-	if [ -e $string1 ]; then
-		echo pwrutilx not availble, setting alucardsched instead
-		echo alucardsched > $GOV_PATH/scaling_governor
-		chmod 664 /dev/stune/top-app/schedtune.boost
-		echo 3 > /dev/stune/top-app/schedtune.boost
-		echo 48 > /proc/sys/kernel/sched_nr_migrate
 		echo 1 > /dev/stune/foreground/schedtune.prefer_idle
 		echo 1 > /dev/stune/top-app/schedtune.prefer_idle
 		if [ -e "/proc/sys/kernel/sched_autogroup_enabled" ]; then
@@ -101,40 +92,42 @@ if [ "$Pwrutilx_available" == "false" ] && [ "$Alucardsched_available" == "true"
 		if [ -e "/proc/sys/kernel/sched_is_big_little" ]; then
 			echo 1 > /proc/sys/kernel/sched_is_big_little
 		fi
-		chmod 664 /proc/sys/kernel/sched_cfs_boost
-		echo -100 > /proc/sys/kernel/sched_cfs_boost
-		echo 0 > /proc/sys/kernel/sched_initial_task_util
-		if [ -e "/proc/sys/kernel/sched_boost" ]; then
-			echo 0 > /proc/sys/kernel/sched_boost
-		fi
-	fi
-fi
-if [ "$Pwrutilx_available" == "false" ] && [ "$Alucardsched_available" == "false" ] && [ "$schedutil_available" == "true" ]; then
-	if [ -e $string1 ]; then
-		echo neither prwutilx nor alucardsched availble, setting schedutil instead
-		echo schedutil > $GOV_PATH/scaling_governor
-		chmod 664 /dev/stune/top-app/schedtune.boost
-		echo 5 > /dev/stune/top-app/schedtune.boost
-		echo 56 > /proc/sys/kernel/sched_nr_migrate
-		echo 1 > /dev/stune/foreground/schedtune.prefer_idle
-		echo 1 > /dev/stune/top-app/schedtune.prefer_idle
-		if [ -e "/proc/sys/kernel/sched_autogroup_enabled" ]; then
-			echo 0 > /proc/sys/kernel/sched_autogroup_enabled
-		fi
-		echo 0 > /proc/sys/kernel/sched_child_runs_first
-		echo 1 > /proc/sys/kernel/sched_cstate_aware
-		if [ -e "/proc/sys/kernel/sched_is_big_little" ]; then
-			echo 1 > /proc/sys/kernel/sched_is_big_little
-		fi
-		chmod 664 /proc/sys/kernel/sched_cfs_boost
-		echo -100 > /proc/sys/kernel/sched_cfs_boost
 		echo 10 > /proc/sys/kernel/sched_initial_task_util
 		if [ -e "/proc/sys/kernel/sched_boost" ]; then
 			echo 0 > /proc/sys/kernel/sched_boost
 		fi
+		if [ -e "/proc/sys/kernel/sched_use_walt_task_util" ]; then
+			echo 0 > /proc/sys/kernel/sched_use_walt_task_util
+			echo 0 > /proc/sys/kernel/sched_use_walt_cpu_util
+		fi
 	fi
-fi
-if [ "$schedutil_available" == "false" ]; then
+elif [ "$pwrutilx_available" == "false" ] && [ "$schedutil_available" == "true" ]; then
+	if [ -e $string1 ]; then
+		echo setting schedutil
+		echo schedutil > $GOV_PATH/scaling_governor
+		chmod 664 /dev/stune/top-app/schedtune.boost
+		echo 10 > /dev/stune/top-app/schedtune.boost
+		echo 96 > /proc/sys/kernel/sched_nr_migrate
+		echo 1 > /dev/stune/foreground/schedtune.prefer_idle
+		echo 1 > /dev/stune/top-app/schedtune.prefer_idle
+		if [ -e "/proc/sys/kernel/sched_autogroup_enabled" ]; then
+			echo 0 > /proc/sys/kernel/sched_autogroup_enabled
+		fi
+		echo 0 > /proc/sys/kernel/sched_child_runs_first
+		echo 1 > /proc/sys/kernel/sched_cstate_aware
+		if [ -e "/proc/sys/kernel/sched_is_big_little" ]; then
+			echo 1 > /proc/sys/kernel/sched_is_big_little
+		fi
+		echo 10 > /proc/sys/kernel/sched_initial_task_util
+		if [ -e "/proc/sys/kernel/sched_boost" ]; then
+			echo 0 > /proc/sys/kernel/sched_boost
+		fi
+		if [ -e "/proc/sys/kernel/sched_use_walt_task_util" ]; then
+			echo 0 > /proc/sys/kernel/sched_use_walt_task_util
+			echo 0 > /proc/sys/kernel/sched_use_walt_cpu_util
+		fi
+	fi
+else
     if [ -e $string1 ]; then
 		echo Tweaking HMP Scheduler
 		echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
@@ -213,43 +206,36 @@ fi
 #fi
 fi
 #Apply settings to Big cluster
+echo Changing governor at big cluster
+
 if [ -d /sys/devices/system/cpu/cpu2/cpufreq ]; then
 if [ -e /sys/devices/system/cpu/cpu2/cpufreq ]; then
     GOV_big_PATH=/sys/devices/system/cpu/cpu2/cpufreq
 fi
 string2=/sys/devices/system/cpu/cpu2/cpufreq/scaling_available_governors;
 interactive_available_big=false;
-Pwrutilx_available_big=false;
-Alucardsched_available_big=false;
+pwrutilx_available_big=false;
 schedutil_available_big=false;
 if grep 'interactive' $string2; then
      interactive_available_big=true;
 fi
 if grep 'pwrutilx' $string2; then
-     Pwrutilx_available_big=true;
-fi
-if grep 'alucardsched' $string2; then
-	Alucardsched_available_big=true;
+	pwrutilx_available_big=true;
 fi
 if grep 'schedutil' $string2; then
 	schedutil_available_big=true;
 fi
-if [ "$Pwrutilx_available_big" == "true" ]; then
-    if [ -e $string2 ]; then
+if [ "$pwrutilx_available_big" == "true" ]; then
+	if [ -e $string2 ]; then
+		echo setting pwrutilx
 		echo pwrutilx > $GOV_big_PATH/scaling_governor
-    fi
-fi
-if [ "$Pwrutilx_available_big" == "false" ] && [ "$Alucardsched_available_big" == "true" ]; then
-	if [ -e $string2 ]; then
-		echo alucardsched > $GOV_big_PATH/scaling_governor
 	fi
-fi
-if [ "$Pwrutilx_available_big" == "false" ] && [ "$Alucardsched_available_big" == "false" ] && [ "$schedutil_available_big" == "true" ]; then
+elif [ "$pwrutilx_available_big" == "false" ] && [ "$schedutil_available_big" == "true" ]; then
 	if [ -e $string2 ]; then
+		echo setting schedutil
 		echo schedutil > $GOV_big_PATH/scaling_governor
 	fi
-fi
-if [ "$schedutil_available_big" == "false" ]; then
+else
     if [ -e $string2 ]; then
 		echo 40000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/min_sample_time
 		echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/max_freq_hysteresis
@@ -298,6 +284,7 @@ if [ -e "/sys/module/cpu_boost" ]; then
 	echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
 fi
 #Disable TouchBoost
+echo Disabling TouchBoost
 if [ -e "/sys/module/msm_performance/parameters/touchboost" ]; then
 	chmod 644 /sys/module/msm_performance/parameters/touchboost
 	echo 0 > /sys/module/msm_performance/parameters/touchboost
@@ -412,7 +399,7 @@ if [ -e "/sys/block/zram0" ]; then
 	echo 2 > /sys/block/zram0/queue/nomerges 
 	echo 0 > /sys/block/zram0/queue/rotational 
 	echo 1 > /sys/block/zram0/queue/rq_affinity
-	echo 8 > /sys/block/zram0/max_comp_streams
+	echo 4 > /sys/block/zram0/max_comp_streams
 	chmod 644 /sys/block/zram0/disksize
 	echo 1073741824 > /sys/block/zram0/disksize
 	mkswap /dev/block/zram0 > /dev/null 2>&1
@@ -480,12 +467,12 @@ echo 0 > /proc/sys/vm/oom_kill_allocating_task
 echo 0 > /proc/sys/vm/page-cluster
 echo 60 > /proc/sys/vm/swappiness
 echo 100 > /proc/sys/vm/vfs_cache_pressure
-echo 20 > /proc/sys/vm/dirty_ratio
-echo 5 > /proc/sys/vm/dirty_background_ratio
+echo 40 > /proc/sys/vm/dirty_ratio
+echo 10 > /proc/sys/vm/dirty_background_ratio
 echo 50 > /proc/sys/vm/overcommit_ratio
-echo 4096 > /proc/sys/vm/min_free_kbytes
-echo 128 > /proc/sys/kernel/random/read_wakeup_threshold
-echo 896 > /proc/sys/kernel/random/write_wakeup_threshold
+echo 8192 > /proc/sys/vm/min_free_kbytes
+echo 16 > /proc/sys/kernel/random/read_wakeup_threshold
+echo 32 > /proc/sys/kernel/random/write_wakeup_threshold
 ## Block rpmb
 echo 0 > /sys/block/mmcblk0rpmb/queue/add_random
 echo 0 > /sys/block/mmcblk0rpmb/queue/iostats
@@ -537,3 +524,6 @@ fstrim -v /data
 fstrim -v /cache
 fstrim -v /system
 fstrim -v /preload
+echo ----------------------------------------------------
+echo "Settings successfully applied, have fun! \m/"
+echo ----------------------------------------------------

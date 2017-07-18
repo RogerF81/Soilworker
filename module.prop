@@ -1,7 +1,7 @@
 id=SD820_uni
-name=EAS/HMP Magisk module for SD820/821 devices
-version=v5.0
+name=EAS/HMP Tweaks module for SD820/821 devices
+version=v6.0
 versionCode=1
 author=RogerF81
-description=This is a Magisk module for kernel tweaking for Snapdragon 820/821 devices.
-template=3
+description=This is a Magisk module for kernel tweaks for Snapdragon 820/821 devices.
+template=4
