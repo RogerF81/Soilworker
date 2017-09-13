@@ -16,15 +16,15 @@ echo "\m/"
 echo "Let's go"
 
 #Disable BCL
-if [ -e "/sys/devices/soc/soc:qcom,bcl/mode" ]; then
+if [ -e /sys/devices/soc/soc:qcom,bcl/mode ]; then
 	echo "Disabling BCL and Removing Perfd"
 	chmod 644 /sys/devices/soc/soc:qcom,bcl/mode
 	echo -n disable > /sys/devices/soc/soc:qcom,bcl/mode
 fi
-if [ -e "/data/system/perfd" ]; then
+if [ -e /data/system/perfd ]; then
 	stop perfd
 fi
-if [ -e "/data/system/perfd/default_values" ]; then
+if [ -e /data/system/perfd/default_values ]; then
 	rm /data/system/perfd/default_values
 fi
 #turn on all cores
@@ -79,19 +79,19 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 			echo 0 > /dev/stune/background/schedtune.prefer_idle
 			echo 1 > /dev/stune/foreground/schedtune.prefer_idle
 			echo 1 > /dev/stune/top-app/schedtune.prefer_idle
-			if [ -e "/proc/sys/kernel/sched_autogroup_enabled" ]; then
+			if [ -e /proc/sys/kernel/sched_autogroup_enabled ]; then
 				echo 0 > /proc/sys/kernel/sched_autogroup_enabled
 			fi
 			echo 0 > /proc/sys/kernel/sched_child_runs_first
 			echo 1 > /proc/sys/kernel/sched_cstate_aware
-			if [ -e "/proc/sys/kernel/sched_is_big_little" ]; then
+			if [ -e /proc/sys/kernel/sched_is_big_little ]; then
 				echo 1 > /proc/sys/kernel/sched_is_big_little
 			fi
 			echo 0 > /proc/sys/kernel/sched_initial_task_util
-			if [ -e "/proc/sys/kernel/sched_boost" ]; then
+			if [ -e /proc/sys/kernel/sched_boost ]; then
 				echo 0 > /proc/sys/kernel/sched_boost
 			fi
-			if [ -e "/proc/sys/kernel/sched_use_walt_task_util" ]; then
+			if [ -e /proc/sys/kernel/sched_use_walt_task_util ]; then
 				echo 0 > /proc/sys/kernel/sched_use_walt_task_util
 				echo 0 > /proc/sys/kernel/sched_use_walt_cpu_util
 				echo 0 > /proc/sys/kernel/sched_walt_init_task_load_pct
@@ -109,19 +109,19 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 			echo 0 > /dev/stune/background/schedtune.prefer_idle
 			echo 1 > /dev/stune/foreground/schedtune.prefer_idle
 			echo 1 > /dev/stune/top-app/schedtune.prefer_idle
-			if [ -e "/proc/sys/kernel/sched_autogroup_enabled" ]; then
+			if [ -e /proc/sys/kernel/sched_autogroup_enabled ]; then
 				echo 0 > /proc/sys/kernel/sched_autogroup_enabled
 			fi
 			echo 0 > /proc/sys/kernel/sched_child_runs_first
 			echo 1 > /proc/sys/kernel/sched_cstate_aware
-			if [ -e "/proc/sys/kernel/sched_is_big_little" ]; then
+			if [ -e /proc/sys/kernel/sched_is_big_little ]; then
 				echo 1 > /proc/sys/kernel/sched_is_big_little
 			fi
 			echo 0 > /proc/sys/kernel/sched_initial_task_util
-			if [ -e "/proc/sys/kernel/sched_boost" ]; then
+			if [ -e /proc/sys/kernel/sched_boost ]; then
 				echo 0 > /proc/sys/kernel/sched_boost
 			fi
-			if [ -e "/proc/sys/kernel/sched_use_walt_task_util" ]; then
+			if [ -e /proc/sys/kernel/sched_use_walt_task_util ]; then
 				echo 0 > /proc/sys/kernel/sched_use_walt_task_util
 				echo 0 > /proc/sys/kernel/sched_use_walt_cpu_util
 				echo 0 > /proc/sys/kernel/sched_walt_init_task_load_pct
@@ -145,15 +145,15 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 			echo 25 > /proc/sys/kernel/sched_downmigrate
 			echo 15 > /proc/sys/kernel/sched_small_wakee_task_load
 			echo 0 > /proc/sys/kernel/sched_init_task_load
-			if [ -e "/proc/sys/kernel/sched_heavy_task" ]; then
+			if [ -e /proc/sys/kernel/sched_heavy_task ]; then
 				echo 65 > /proc/sys/kernel/sched_heavy_task
 			fi
-			if [ -e "/proc/sys/kernel/sched_enable_power_aware" ]; then
+			if [ -e /proc/sys/kernel/sched_enable_power_aware ]; then
 				echo 1 > /proc/sys/kernel/sched_enable_power_aware
 			fi
 			echo 1 > /proc/sys/kernel/sched_enable_thread_grouping
 			echo 35 > /proc/sys/kernel/sched_big_waker_task_load
-			if [ -e "/proc/sys/kernel/sched_small_task" ]; then
+			if [ -e /proc/sys/kernel/sched_small_task ]; then
 				echo 10 > /proc/sys/kernel/sched_small_task
 			fi
 			echo 3 > /proc/sys/kernel/sched_window_stats_policy
@@ -167,16 +167,16 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 			echo 10 > /proc/sys/kernel/sched_rr_timeslice_ms
 			echo 950000 > /proc/sys/kernel/sched_rt_runtime_us
 			echo 1000000 > /proc/sys/kernel/sched_rt_period_us
-			if [ -e "/proc/sys/kernel/sched_migration_fixup" ]; then
+			if [ -e /proc/sys/kernel/sched_migration_fixup ]; then
 				echo 1 > /proc/sys/kernel/sched_migration_fixup
 			fi
-			if [ -e "/proc/sys/kernel/sched_freq_dec_notify" ]; then
+			if [ -e /proc/sys/kernel/sched_freq_dec_notify ]; then
 				echo 410000 > /proc/sys/kernel/sched_freq_dec_notify
 			fi
-			if [ -e "/proc/sys/kernel/sched_freq_inc_notify" ]; then
+			if [ -e /proc/sys/kernel/sched_freq_inc_notify ]; then
 				echo 610000 > /proc/sys/kernel/sched_freq_inc_notify
 			fi
-			if [ -e "/proc/sys/kernel/sched_boost" ]; then
+			if [ -e /proc/sys/kernel/sched_boost ]; then
 				echo 0 > /proc/sys/kernel/sched_boost
 			fi
 			if [ "pnp_available" == "false" ]; then
@@ -257,7 +257,7 @@ if [ -d /sys/devices/system/cpu/cpu2/cpufreq ]; then
 	fi
 fi
 #Disable input boost
-if [ -e "/sys/kernel/cpu_input_boost" ]; then
+if [ -e /sys/kernel/cpu_input_boost ]; then
 	chmod 644 /sys/kernel/cpu_input_boost/enable
 	echo 0 > /sys/kernel/cpu_input_boost/enable
 	chmod 644 /sys/kernel/cpu_input_boost/ib_duration_ms
@@ -265,7 +265,7 @@ if [ -e "/sys/kernel/cpu_input_boost" ]; then
 	chmod 644 /sys/kernel/cpu_input_boost/ib_freqs
 	echo "0 0" > /sys/kernel/cpu_input_boost/ib_freqs
 fi
-if [ -e "/sys/module/cpu_boost" ]; then
+if [ -e /sys/module/cpu_boost ]; then
 	chmod 644 /sys/module/cpu_boost/parameters/sched_boost_on_input
 	echo N > /sys/module/cpu_boost/parameters/sched_boost_on_input
 	chmod 644 /sys/module/cpu_boost/parameters/input_boost_freq
@@ -275,101 +275,99 @@ if [ -e "/sys/module/cpu_boost" ]; then
 fi
 #Disable TouchBoost
 echo Disabling TouchBoost
-if [ -e "/sys/module/msm_performance/parameters/touchboost" ]; then
+if [ -e /sys/module/msm_performance/parameters/touchboost ]; then
 	chmod 644 /sys/module/msm_performance/parameters/touchboost
 	echo 0 > /sys/module/msm_performance/parameters/touchboost
 fi
-if [ -e "/sys/power/pnpmgr/touch_boost" ]; then
+if [ -e /sys/power/pnpmgr/touch_boost ]; then
 	chmod 644 /sys/power/pnpmgr/touch_boost
 	echo 0 > /sys/power/pnpmgr/touch_boost
 fi
 #I/0 & block tweaks
-if [ -d "/sys/block/mmcblk0/queue/scheduler" ]; then
-	string3=/block/mmcblk0/queue/scheduler;
-	maple=false;
-	noop=false;
-	if grep 'maple' $string3; then
-   		maple=true;
-	fi
-	if grep 'noop' $string3; then
-    		noop=true;
-	fi
-	if [ "$maple" == "true" ]; then
-		if [ -e $string3 ]; then
-			echo "setting maple"
-			echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
-			echo "maple" > /sys/block/mmcblk0/queue/scheduler
-			echo 16 > /sys/block/mmcblk0/queue/iosched/fifo_batch
-			echo 4 > /sys/block/mmcblk0/queue/iosched/writes_starved
-			echo 10 > /sys/block/mmcblk0/queue/iosched/sleep_latency_multiple
-			echo 5 * HZ > /sys/block/mmcblk0/queue/iosched/async_read_expire
-			echo 5 * HZ > /sys/block/mmcblk0/queue/iosched/async_write_expire
-			echo HZ / 2 > /sys/block/mmcblk0/queue/iosched/sync_read_expire
-			echo HZ / 2 > /sys/block/mmcblk0/queue/iosched/sync_write_expire
-			echo 128 > /sys/block/mmcblk0/queue/nr_requests
-			echo 0 > /sys/block/mmcblk0/queue/add_random
-			echo 0 > /sys/block/mmcblk0/queue/iostats
-			echo 1 > /sys/block/mmcblk0/queue/nomerges
-			echo 0 > /sys/block/mmcblk0/queue/rotational
-			echo 1 > /sys/block/mmcblk0/queue/rq_affinity
-			echo 1024 > /sys/block/mmcblk1/bdi/read_ahead_kb
-			echo "maple" > /sys/block/mmcblk1/queue/scheduler
-			echo 16 > /sys/block/mmcblk1/queue/iosched/fifo_batch
-			echo 4 > /sys/block/mmcblk1/queue/iosched/writes_starved
-			echo 10 > /sys/block/mmcblk1/queue/iosched/sleep_latency_multiple
-			echo 250 > /sys/block/mmcblk1/queue/iosched/async_read_expire
-			echo 450 > /sys/block/mmcblk1/queue/iosched/async_write_expire
-			echo 350 > /sys/block/mmcblk1/queue/iosched/sync_read_expire
-			echo 550 > /sys/block/mmcblk1/queue/iosched/sync_write_expire
-			echo 128 > /sys/block/mmcblk1/queue/nr_requests
-			echo 0 > /sys/block/mmcblk1/queue/add_random
-			echo 0 > /sys/block/mmcblk1/queue/iostats
-			echo 1 > /sys/block/mmcblk1/queue/nomerges
-			echo 0 > /sys/block/mmcblk1/queue/rotational
-			echo 1 > /sys/block/mmcblk1/queue/rq_affinity
-			echo "maple" > /sys/block/mmcblk0rpmb/queue/scheduler
-			echo 16 > /sys/block/mmcblk0rpmb/queue/iosched/fifo_batch
-			echo 4 > /sys/block/mmcblk0rpmb/queue/iosched/writes_starved
-			echo 10 > /sys/block/mmcblk0rpmb/queue/iosched/sleep_latency_multiple
-			echo 250 > /sys/block/mmcblk0rpmb/queue/iosched/async_read_expire
-			echo 450 > /sys/block/mmcblk0rpmb/queue/iosched/async_write_expire
-			echo 350 > /sys/block/mmcblk0rpmb/queue/iosched/sync_read_expire
-			echo 550 > /sys/block/mmcblk0rpmb/queue/iosched/sync_write_expire
-			echo 0 > /sys/block/mmcblk0rpmb/queue/add_random
-			echo 0 > /sys/block/mmcblk0rpmb/queue/iostats
-			echo 1 > /sys/block/mmcblk0rpmb/queue/nomerges
-			echo 0 > /sys/block/mmcblk0rpmb/queue/rotational
-			echo 1 > /sys/block/mmcblk0rpmb/queue/rq_affinity
+string3=/block/mmcblk0/queue/scheduler;
+maple=false;
+noop=false;
+if grep 'maple' $string3; then
+	maple=true;
+fi
+if grep 'noop' $string3; then
+	noop=true;
+fi
+if [ "$maple" == "true" ]; then
+	if [ -e $string3 ]; then
+		echo "setting maple"
+		echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
+		echo "maple" > /sys/block/mmcblk0/queue/scheduler
+		echo 16 > /sys/block/mmcblk0/queue/iosched/fifo_batch
+		echo 4 > /sys/block/mmcblk0/queue/iosched/writes_starved
+		echo 10 > /sys/block/mmcblk0/queue/iosched/sleep_latency_multiple
+		echo 5 * HZ > /sys/block/mmcblk0/queue/iosched/async_read_expire
+		echo 5 * HZ > /sys/block/mmcblk0/queue/iosched/async_write_expire
+		echo HZ / 2 > /sys/block/mmcblk0/queue/iosched/sync_read_expire
+		echo HZ / 2 > /sys/block/mmcblk0/queue/iosched/sync_write_expire
+		echo 128 > /sys/block/mmcblk0/queue/nr_requests
+		echo 0 > /sys/block/mmcblk0/queue/add_random
+		echo 0 > /sys/block/mmcblk0/queue/iostats
+		echo 1 > /sys/block/mmcblk0/queue/nomerges
+		echo 0 > /sys/block/mmcblk0/queue/rotational
+		echo 1 > /sys/block/mmcblk0/queue/rq_affinity
+		echo 1024 > /sys/block/mmcblk1/bdi/read_ahead_kb
+		echo "maple" > /sys/block/mmcblk1/queue/scheduler
+		echo 16 > /sys/block/mmcblk1/queue/iosched/fifo_batch
+		echo 4 > /sys/block/mmcblk1/queue/iosched/writes_starved
+		echo 10 > /sys/block/mmcblk1/queue/iosched/sleep_latency_multiple
+		echo 5 * HZ > /sys/block/mmcblk1/queue/iosched/async_read_expire
+		echo 5 * HZ > /sys/block/mmcblk1/queue/iosched/async_write_expire
+		echo HZ / 2 > /sys/block/mmcblk1/queue/iosched/sync_read_expire
+		echo HZ / 2 > /sys/block/mmcblk1/queue/iosched/sync_write_expire
+		echo 128 > /sys/block/mmcblk1/queue/nr_requests
+		echo 0 > /sys/block/mmcblk1/queue/add_random
+		echo 0 > /sys/block/mmcblk1/queue/iostats
+		echo 1 > /sys/block/mmcblk1/queue/nomerges
+		echo 0 > /sys/block/mmcblk1/queue/rotational
+		echo 1 > /sys/block/mmcblk1/queue/rq_affinity
+		echo "maple" > /sys/block/mmcblk0rpmb/queue/scheduler
+		echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/fifo_batch
+		echo 4 > /sys/block/mmcblk0rpmb/queue/iosched/writes_starved
+		echo 10 > /sys/block/mmcblk0rpmb/queue/iosched/sleep_latency_multiple
+		echo 5 * HZ > /sys/block/mmcblk0rpmb/queue/iosched/async_read_expire
+		echo 5 * HZ > /sys/block/mmcblk0rpmb/queue/iosched/async_write_expire
+		echo HZ / 2 > /sys/block/mmcblk0rpmb/queue/iosched/sync_read_expire
+		echo HZ / 2 > /sys/block/mmcblk0rpmb/queue/iosched/sync_write_expire
+		echo 0 > /sys/block/mmcblk0rpmb/queue/add_random
+		echo 0 > /sys/block/mmcblk0rpmb/queue/iostats
+		echo 1 > /sys/block/mmcblk0rpmb/queue/nomerges
+		echo 0 > /sys/block/mmcblk0rpmb/queue/rotational
+		echo 1 > /sys/block/mmcblk0rpmb/queue/rq_affinity
 		fi
-	elif [ "$maple" == "false" ] && [ "noop" == "true" ]; then
-		if [ -e $string3 ]; then
-			echo "setting noop"
-			echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
-			echo "noop" > /sys/block/mmcblk0/queue/scheduler
-			echo 0 > /sys/block/mmcblk0/queue/add_random
-			echo 0 > /sys/block/mmcblk0/queue/iostats
-			echo 1 > /sys/block/mmcblk0/queue/nomerges
-			echo 0 > /sys/block/mmcblk0/queue/rotational
-			echo 1 > /sys/block/mmcblk1/queue/rq_affinity
-			echo 1024 > /sys/block/mmcblk1/bdi/read_ahead_kb
-			echo "noop" > /sys/block/mmcblk1/queue/scheduler
-			echo 0 > /sys/block/mmcblk1/queue/add_random
-			echo 0 > /sys/block/mmcblk1/queue/iostats
-			echo 1 > /sys/block/mmcblk1/queue/nomerges
-			echo 0 > /sys/block/mmcblk1/queue/rotational
-			echo 1 > /sys/block/mmcblk1/queue/rq_affinity
-			echo "noop" > /sys/block/mmcblk0rpmb/queue/scheduler
-			echo 0 > /sys/block/mmcblk0rpmb/queue/add_random
-			echo 0 > /sys/block/mmcblk0rpmb/queue/iostats
-			echo 1 > /sys/block/mmcblk0rpmb/queue/nomerges
-			echo 0 > /sys/block/mmcblk0rpmb/queue/rotational
-			echo 1 > /sys/block/mmcblk0rpmb/queue/rq_affinity		
-		fi
-	else
-  		if [ -e $string3 ]; then
-			echo "I/0 governor won't be changed"
-  		fi
+elif [ "$maple" == "false" ] && [ "noop" == "true" ]; then
+	if [ -e $string3 ]; then
+		echo "setting noop"
+		echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
+		echo "noop" > /sys/block/mmcblk0/queue/scheduler
+		echo 0 > /sys/block/mmcblk0/queue/add_random
+		echo 0 > /sys/block/mmcblk0/queue/iostats
+		echo 1 > /sys/block/mmcblk0/queue/nomerges
+		echo 0 > /sys/block/mmcblk0/queue/rotational
+		echo 1 > /sys/block/mmcblk1/queue/rq_affinity
+		echo 1024 > /sys/block/mmcblk1/bdi/read_ahead_kb
+		echo "noop" > /sys/block/mmcblk1/queue/scheduler
+		echo 0 > /sys/block/mmcblk1/queue/add_random
+		echo 0 > /sys/block/mmcblk1/queue/iostats
+		echo 1 > /sys/block/mmcblk1/queue/nomerges
+		echo 0 > /sys/block/mmcblk1/queue/rotational
+		echo 1 > /sys/block/mmcblk1/queue/rq_affinity
+		echo "noop" > /sys/block/mmcblk0rpmb/queue/scheduler
+		echo 0 > /sys/block/mmcblk0rpmb/queue/add_random
+		echo 0 > /sys/block/mmcblk0rpmb/queue/iostats
+		echo 1 > /sys/block/mmcblk0rpmb/queue/nomerges
+		echo 0 > /sys/block/mmcblk0rpmb/queue/rotational
+		echo 1 > /sys/block/mmcblk0rpmb/queue/rq_affinity		
 	fi
+else
+	if [ -e $string3 ]; then
+		echo "I/0 governor won't be changed"
+  	fi
 fi
 #TCP tweaks
 if [ -d /proc/sys/net/ipv4/tcp_congestion_control ]; then
@@ -403,40 +401,40 @@ if [ -d /proc/sys/net/ipv4/tcp_congestion_control ]; then
 	fi	
 fi
 ## Wakelocks
-if [ -e "/sys/module/bcmdhd/parameters/wlrx_divide" ]; then
+if [ -e /sys/module/bcmdhd/parameters/wlrx_divide ]; then
 	echo 10 > /sys/module/bcmdhd/parameters/wlrx_divide
 fi
-if [ -e "/sys/module/bcmdhd/parameters/wlctrl_divide" ]; then
+if [ -e /sys/module/bcmdhd/parameters/wlctrl_divide ]; then
 	echo 10 > /sys/module/bcmdhd/parameters/wlctrl_divide
 fi
-if [ -e "/sys/module/wakeup/parameters/enable_wlan_rx_wake_ws" ]; then
+if [ -e /sys/module/wakeup/parameters/enable_wlan_rx_wake_ws ]; then
 	echo N > /sys/module/wakeup/parameters/enable_wlan_rx_wake_ws
 fi
-if [ -e "/sys/module/wakeup/parameters/enable_wlan_ctrl_wake_ws" ]; then
+if [ -e /sys/module/wakeup/parameters/enable_wlan_ctrl_wake_ws ]; then
 	echo N > /sys/module/wakeup/parameters/enable_wlan_ctrl_wake_ws
 fi
-if [ -e "/sys/module/wakeup/parameters/enable_wlan_wake_ws" ]; then
+if [ -e /sys/module/wakeup/parameters/enable_wlan_wake_ws ]; then
 	echo N > /sys/module/wakeup/parameters/enable_wlan_wake_ws
 fi
-if [ -e "/sys/module/wakeup/parameters/enable_bluedroid_timer_ws" ]; then
+if [ -e /sys/module/wakeup/parameters/enable_bluedroid_timer_ws ]; then
 	echo N > /sys/module/wakeup/parameters/enable_bluedroid_timer_ws
 fi
-if [ -e "/sys/module/wakeup/parameters/enable_ipa_ws" ]; then
+if [ -e /sys/module/wakeup/parameters/enable_ipa_ws ]; then
 	echo N > /sys/module/wakeup/parameters/enable_ipa_ws
 fi
-if [ -e "/sys/module/wakeup/parameters/enable_wlan_extscan_wl_ws" ]; then
+if [ -e /sys/module/wakeup/parameters/enable_wlan_extscan_wl_ws ]; then
 	echo N > /sys/module/wakeup/parameters/enable_wlan_extscan_wl_ws
 fi
-if [ -e "/sys/module/wakeup/parameters/enable_qcom_rx_wakelock_ws" ]; then
+if [ -e /sys/module/wakeup/parameters/enable_qcom_rx_wakelock_ws ]; then
 	echo N > /sys/module/wakeup/parameters/enable_qcom_rx_wakelock_ws
 fi
 ## Thermal
-if [ -e "/sys/module/msm_thermal" ]; then
+if [ -e /sys/module/msm_thermal ]; then
 	echo 1 > /sys/module/msm_thermal/core_control/enabled
 	echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
 fi
 ## zRam
-if [ -e "/sys/block/zram0" ]; then
+if [ -e /sys/block/zram0 ]; then
 	swapoff /dev/block/zram0 > /dev/null 2>&1
 	echo 1 > /sys/block/zram0/reset
 	echo lz4 > /sys/block/zram0/comp_algorithm
@@ -488,7 +486,7 @@ if [ -d /sys/devices/soc/b00000.qcom,kgsl-3d0/devfreq/b00000.qcom,kgsl-3d0/gpu_a
 	fi
 fi
 ##Pnp, if available
-if [ -e "/sys/power/pnpmgr" ]; then
+if [ -e /sys/power/pnpmgr ]; then
 	echo 0 > /sys/power/pnpmgr/touch_boost
 	echo 652800 > /sys/power/pnpmgr/cluster/little/cpu0/thermal_freq
 	echo 307200 > /sys/power/pnpmgr/cluster/little/cpu0/scaling_min_freq
@@ -539,7 +537,7 @@ for j in /sys/block/ram*; do
 done
 ## Charging 
 echo "0" > /sys/kernel/fast_charge/force_fast_charge
-if [ -e "/sys/module/snd_soc_wcd9330/parameters/high_perf_mode" ]; then
+if [ -e /sys/module/snd_soc_wcd9330/parameters/high_perf_mode ]; then
 	chmod 664 /sys/module/snd_soc_wcd9330/parameters/high_perf_mode
 	echo 1 > /sys/module/snd_soc_wcd9330/parameters/high_perf_mode
 fi
