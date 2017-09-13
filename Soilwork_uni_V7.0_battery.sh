@@ -370,11 +370,11 @@ else
   	fi
 fi
 #TCP tweaks
-if [ -e /proc/sys/net/ipv4/tcp_congestion_control ]; then
-	string4=/proc/sys/net/ipv4/tcp_congestion_control;
+if [ -d /proc/sys/net/ipv4/tcp_available_congestion_control ]; then
+	string4=/proc/sys/net/ipv4/tcp_available_congestion_control;
 	westwood=false;
 	if grep 'westwood' $string4; then
-    		 westwood=true;
+		westwood=true;
 	fi
 	if [ "$westwood" == "true" ]; then
 		if [ -e $string4 ]; then
@@ -398,7 +398,7 @@ if [ -e /proc/sys/net/ipv4/tcp_congestion_control ]; then
 			echo 1 > /proc/sys/net/ipv4/tcp_sack
 			echo 1 > /proc/sys/net/ipv4/tcp_window_scaling
 		fi
-	fi	
+	fi
 fi
 ## Wakelocks
 if [ -e /sys/module/bcmdhd/parameters/wlrx_divide ]; then
