@@ -9,15 +9,15 @@
 #Last Updated: 09/13/2017
 #Credits: @Alcolawl @soniCron @Asiier @Freak07 @Mostafa Wael @Senthil360 @TotallyAnxious @Eliminater74 @RenderBroken @ZeroInfinity @Kyuubi10 @ivicask
 sleep 30
-echo ----------------------------------------------------
-echo Applying Soilwork Kernel Tweaks
-echo ----------------------------------------------------
+echo "----------------------------------------------------"
+echo "Applying Soilwork Kernel Tweaks"
+echo "----------------------------------------------------"
 echo "\m/"
 echo "Let's go"
 
 #Disable BCL
 if [ -e "/sys/devices/soc/soc:qcom,bcl/mode" ]; then
-	echo Disabling BCL and Removing Perfd
+	echo "Disabling BCL and Removing Perfd"
 	chmod 644 /sys/devices/soc/soc:qcom,bcl/mode
 	echo -n disable > /sys/devices/soc/soc:qcom,bcl/mode
 fi
@@ -43,7 +43,7 @@ echo 2150400 > /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq
 chmod 644 /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq
 echo 307200 > /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq
 #Apply settings to LITTLE cluster
-echo Changing governor at LITTLE cluster
+echo "Changing governor at LITTLE cluster"
 if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 	if [ -e /sys/devices/system/cpu/cpu0/cpufreq ]; then
    		GOV_PATH=/sys/devices/system/cpu/cpu0/cpufreq
@@ -54,21 +54,21 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 	pwrutilx_available=false;
 	schedutil_available=false;
 	pnp_available=false;
-	if [ -e /system/etc/pnp.xml ]; then
-		pnp_available=true;
-	fi
-	if grep 'interactive' $string1; then
-  		interactive_available=true;
-	fi
 	if grep 'pwrutilx' $string1; then
 		pwrutilx_available=true;
 	fi
 	if grep 'schedutil' $string1; then
 		schedutil_available=true;
 	fi
+	if [ -e /system/etc/pnp.xml ]; then
+		pnp_available=true;
+	fi
+	if grep 'interactive' $string1; then
+  		interactive_available=true;
+	fi
 	if [ "$pwrutilx_available" == "true" ]; then
 		if [ -e $string1 ]; then
-			echo setting pwrutilx
+			echo "setting pwrutilx"
 			echo pwrutilx > $GOV_PATH/scaling_governor
 			echo 96 > /proc/sys/kernel/sched_nr_migrate
 			echo 0 > /dev/stune/schedtune.prefer_idle
@@ -98,7 +98,7 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 		fi
 	elif [ "$pwrutilx_available" == "false" ] && [ "$schedutil_available" == "true" ]; then
 		if [ -e $string1 ]; then
-			echo setting schedutil
+			echo "setting schedutil"
 			echo schedutil > $GOV_PATH/scaling_governor
 			chmod 664 /dev/stune/top-app/schedtune.boost
 			echo 10 > /dev/stune/top-app/schedtune.boost
@@ -126,7 +126,7 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 		fi
 	else
    		if [ -e $string1 ]; then
-			echo Tweaking HMP Scheduler
+			echo "Tweaking HMP Scheduler"
 			echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
 			echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
 			echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/ignore_hispeed_on_notif
@@ -177,7 +177,7 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 				echo 0 > /proc/sys/kernel/sched_boost
 			fi
 			if [ "pnp_available" == "false" ]; then
-				echo interactive will be set on LITTLE cluster
+				echo "interactive will be set on LITTLE cluster"
 				echo 67 422400:49 480000:56 556800:68 652800:76 729600:81 844800:84 960000:89 1036800:87 1111300:84 1190400:7 1228800:86 1324800:92 1478400:99 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 				echo 356940 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_slack
 				chmod 644 /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
@@ -186,14 +186,14 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 				echo 0 652800:40000 1111300:120000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/above_hispeed_delay
 				echo 400 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/go_hispeed_load
 			else
-				echo PnP detected! Tweaks will be set accordingly
+				echo "PnP detected! Tweaks will be set accordingly"
 				echo 67 1228800:86 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 			fi
 		fi
 	fi
 fi
 #Apply settings to Big cluster
-echo Changing governor at big cluster
+echo "Changing governor at big cluster"
 if [ -d /sys/devices/system/cpu/cpu2/cpufreq ]; then
 	if [ -e /sys/devices/system/cpu/cpu2/cpufreq ]; then
  		GOV_big_PATH=/sys/devices/system/cpu/cpu2/cpufreq
@@ -213,7 +213,7 @@ if [ -d /sys/devices/system/cpu/cpu2/cpufreq ]; then
 	fi
 	if [ "$pwrutilx_available_big" == "true" ]; then
 		if [ -e $string2 ]; then
-			echo setting pwrutilx
+			echo "setting pwrutilx"
 			echo pwrutilx > $GOV_big_PATH/scaling_governor
 			echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/pwrutilx/iowait_boost_enable
 			echo 800 > /sys/devices/system/cpu/cpu2/cpufreq/pwrutilx/up_rate_limit_us
@@ -221,7 +221,7 @@ if [ -d /sys/devices/system/cpu/cpu2/cpufreq ]; then
 		fi
 	elif [ "$pwrutilx_available_big" == "false" ] && [ "$schedutil_available_big" == "true" ]; then
 		if [ -e $string2 ]; then
-			echo setting schedutil
+			echo "setting schedutil"
 			echo schedutil > $GOV_big_PATH/scaling_governor
 		fi
 	else
@@ -238,7 +238,7 @@ if [ -d /sys/devices/system/cpu/cpu2/cpufreq ]; then
 			echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/io_is_busy
 			echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/enable_prediction
 			if [ "pnp_available" == "false" ]; then
-				echo interactive will be set on big cluster
+				echo "interactive will be set on big cluster"
 				echo interactive > $GOV_big_PATH/scaling_governor
 				echo 58 556800:58 652800:78 729600:80 806400:84 883200:77 940800:82 1036800:86 1113600:84 1190400:87 1248000:88 1324800:90 1785600:96 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/target_loads
 				echo 178470 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_slack
@@ -247,7 +247,7 @@ if [ -d /sys/devices/system/cpu/cpu2/cpufreq ]; then
 				echo 0 652800:80000 1248000:120000> /sys/devices/system/cpu/cpu2/cpufreq/interactive/above_hispeed_delay
 				echo 81 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/go_hispeed_load
 			else
-				echo PnP detected! Tweaks will be set accordingly
+				echo "PnP detected! Tweaks will be set accordingly"
 				echo 58 1248000:88 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 			fi
 		fi
@@ -271,7 +271,7 @@ if [ -e "/sys/module/cpu_boost" ]; then
 	echo 0 > /sys/module/cpu_boost/parameters/boost_ms
 fi
 #Disable TouchBoost
-echo Disabling TouchBoost
+echo "Disabling TouchBoost"
 if [ -e "/sys/module/msm_performance/parameters/touchboost" ]; then
 	chmod 644 /sys/module/msm_performance/parameters/touchboost
 	echo 0 > /sys/module/msm_performance/parameters/touchboost
@@ -281,7 +281,7 @@ if [ -e "/sys/power/pnpmgr/touch_boost" ]; then
 	echo 0 > /sys/power/pnpmgr/touch_boost
 fi
 #I/0 & block tweaks
-if [ -d /block/mmcblk0/queue/scheduler ]; then
+if [ -d /sys/block/mmcblk0/queue/scheduler ]; then
 	string3=/block/mmcblk0/queue/scheduler;
 	deadline=false;
 	bfq=false;
@@ -293,7 +293,7 @@ if [ -d /block/mmcblk0/queue/scheduler ]; then
 	fi
 	if [ "$deadline" == "true" ]; then
 		if [ -e $string3 ]; then
-			echo setting deadline
+			echo "setting deadline"
 			echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
 			echo "deadline" > /sys/block/mmcblk0/queue/scheduler
 			echo 16 > /sys/block/mmcblk0/queue/iosched/fifo_batch
@@ -332,7 +332,7 @@ if [ -d /block/mmcblk0/queue/scheduler ]; then
 		fi
 	elif [ "$deadline" == "false" ] && [ "bfq" == "true" ]; then
 		if [ -e $string3 ]; then
-			echo setting bfq
+			echo "setting bfq"
 			echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
 			echo "bfq" > /sys/block/mmcblk0/queue/scheduler
 			echo 16384 > /sys/block/mmcblk0/queue/iosched/back_seek_max
@@ -417,6 +417,7 @@ if [ -d /proc/sys/net/ipv4/tcp_congestion_control ]; then
 	fi
 	if [ "$westwood" == "true" ]; then
 		if [ -e $string4 ]; then
+			echo "westwood will be set"
 			echo westwood > /proc/sys/net/ipv4/tcp_congestion_control
 			echo 2 > /proc/sys/net/ipv4/tcp_ecn
 			echo 1 > /proc/sys/net/ipv4/tcp_dsack
@@ -427,6 +428,7 @@ if [ -d /proc/sys/net/ipv4/tcp_congestion_control ]; then
 		fi
 	else
 		if [ -e $string4 ]; then
+			echo "cubic will be set"
 			echo cubic > /proc/sys/net/ipv4/tcp_congestion_control
 			echo 2 > /proc/sys/net/ipv4/tcp_ecn
 			echo 1 > /proc/sys/net/ipv4/tcp_dsack
@@ -500,6 +502,7 @@ if [ -d /sys/devices/soc/b00000.qcom,kgsl-3d0/devfreq/b00000.qcom,kgsl-3d0/gpu_a
 	fi
 	if [ "$GPU_OC" == "true" ]; then
 		if [ -e $GPU_FREQ ]; then
+			echo "GPU is overclocked"
 			chmod 644 /sys/class/kgsl/kgsl-3d0/max_gpuclk
 			echo 652800000 > /sys/class/kgsl/kgsl-3d0/max_gpuclk
 			echo 652800000 > /sys/devices/soc/b00000.qcom,kgsl-3d0/devfreq/b00000.qcom,kgsl-3d0/max_freq
@@ -511,6 +514,7 @@ if [ -d /sys/devices/soc/b00000.qcom,kgsl-3d0/devfreq/b00000.qcom,kgsl-3d0/gpu_a
    		fi
 	else
 		if [ -e $GPU_FREQ ]; then
+			echo "GPU is on stock max freq"
 			chmod 644 /sys/class/kgsl/kgsl-3d0/max_gpuclk
 			echo 624000000 > /sys/class/kgsl/kgsl-3d0/max_gpuclk
 			echo 624000000 > /sys/devices/soc/b00000.qcom,kgsl-3d0/devfreq/b00000.qcom,kgsl-3d0/max_freq
