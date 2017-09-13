@@ -5,7 +5,7 @@
 #Codename: Soilworker_UNI
 #SoC: Snapdragon 820
 #Build Status: stable
-#Version: 7.1
+#Version: 8.0
 #Last Updated: 09/13/2017
 #Credits: @Alcolawl @soniCron @Asiier @Freak07 @Mostafa Wael @Senthil360 @TotallyAnxious @Eliminater74 @RenderBroken @ZeroInfinity @Kyuubi10 @ivicask
 sleep 30
