@@ -281,7 +281,7 @@ if [ -e /sys/power/pnpmgr/touch_boost ]; then
 	echo 0 > /sys/power/pnpmgr/touch_boost
 fi
 #I/0 & block tweaks
-string3=/block/mmcblk0/queue/scheduler;
+string3=/sys/block/mmcblk0/queue/scheduler;
 deadline=false;
 bfq=false;
 if grep 'deadline' $string3; then
@@ -407,7 +407,7 @@ else
     	fi
 fi
 #TCP tweaks
-if [ -d /proc/sys/net/ipv4/tcp_congestion_control ]; then
+if [ -e /proc/sys/net/ipv4/tcp_congestion_control ]; then
 	string4=/proc/sys/net/ipv4/tcp_congestion_control;
 	westwood=false;
 	if grep 'westwood' $string4; then
