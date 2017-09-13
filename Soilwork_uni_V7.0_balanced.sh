@@ -407,34 +407,32 @@ else
     	fi
 fi
 #TCP tweaks
-if [ -d /proc/sys/net/ipv4/tcp_available_congestion_control ]; then
-	string4=/proc/sys/net/ipv4/tcp_available_congestion_control;
-	westwood=false;
-	if grep 'westwood' $string4; then
-		westwood=true;
+string4=/proc/sys/net/ipv4/tcp_available_congestion_control;
+westwood=false;
+if grep 'westwood' $string4; then
+	westwood=true;
+fi
+if [ "$westwood" == "true" ]; then
+	if [ -e $string4 ]; then
+		echo "westwood will be set"
+		echo westwood > /proc/sys/net/ipv4/tcp_congestion_control
+		echo 2 > /proc/sys/net/ipv4/tcp_ecn
+		echo 1 > /proc/sys/net/ipv4/tcp_dsack
+		echo 1 > /proc/sys/net/ipv4/tcp_low_latency
+		echo 1 > /proc/sys/net/ipv4/tcp_timestamps
+		echo 1 > /proc/sys/net/ipv4/tcp_sack
+		echo 1 > /proc/sys/net/ipv4/tcp_window_scaling
 	fi
-	if [ "$westwood" == "true" ]; then
-		if [ -e $string4 ]; then
-			echo "westwood will be set"
-			echo westwood > /proc/sys/net/ipv4/tcp_congestion_control
-			echo 2 > /proc/sys/net/ipv4/tcp_ecn
-			echo 1 > /proc/sys/net/ipv4/tcp_dsack
-			echo 1 > /proc/sys/net/ipv4/tcp_low_latency
-			echo 1 > /proc/sys/net/ipv4/tcp_timestamps
-			echo 1 > /proc/sys/net/ipv4/tcp_sack
-			echo 1 > /proc/sys/net/ipv4/tcp_window_scaling
-		fi
-	else
-		if [ -e $string4 ]; then
-			echo "cubic will be set"
-			echo cubic > /proc/sys/net/ipv4/tcp_congestion_control
-			echo 2 > /proc/sys/net/ipv4/tcp_ecn
-			echo 1 > /proc/sys/net/ipv4/tcp_dsack
-			echo 1 > /proc/sys/net/ipv4/tcp_low_latency
-			echo 1 > /proc/sys/net/ipv4/tcp_timestamps
-			echo 1 > /proc/sys/net/ipv4/tcp_sack
-			echo 1 > /proc/sys/net/ipv4/tcp_window_scaling
-		fi
+else
+	if [ -e $string4 ]; then
+		echo "cubic will be set"
+		echo cubic > /proc/sys/net/ipv4/tcp_congestion_control
+		echo 2 > /proc/sys/net/ipv4/tcp_ecn
+		echo 1 > /proc/sys/net/ipv4/tcp_dsack
+		echo 1 > /proc/sys/net/ipv4/tcp_low_latency
+		echo 1 > /proc/sys/net/ipv4/tcp_timestamps
+		echo 1 > /proc/sys/net/ipv4/tcp_sack
+		echo 1 > /proc/sys/net/ipv4/tcp_window_scaling
 	fi
 fi
 ## Wakelocks
