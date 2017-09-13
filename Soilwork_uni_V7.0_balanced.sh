@@ -95,6 +95,24 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 				echo 0 > /proc/sys/kernel/sched_use_walt_cpu_util
 				echo 0 > /proc/sys/kernel/sched_walt_init_task_load_pct
 			fi
+			echo 1 > /sys/power/helix_engine/helix_engine_enable
+			echo 1 > /sys/power/helix_engine/thermal_engine_enable
+			echo 1 > /sys/power/helix_engine/app_engine_enable
+			echo 1 > /sys/power/helix_engine/suspend_engine_enable
+			echo 0 > /sys/power/helix_engine/thermal_engine/mode
+			echo 1248000 > /sys/power/helix_engine/suspend_engine/suspend_bfreq
+			echo 844800 > /sys/power/helix_engine/suspend_engine/suspend_lfreq
+			echo 1248000 > /sys/power/helix_engine/powersaver_engine/powersave_bfreq
+			echo 844800 > /sys/power/helix_engine/powersaver_engine/powersave_lfreq
+			echo 1248000 > /sys/power/helix_engine/app_engine/battery_freqs/battery_bfreq
+			echo 844800 > /sys/power/helix_engine/app_engine/battery_freqs/battery_lfreq
+			echo 1555200 > /sys/power/helix_engine/app_engine/balanced_freqs/balanced_bfreq
+			echo 1228800 > /sys/power/helix_engine/app_engine/balanced_freqs/balanced_lfreq
+			echo 2150400 > /sys/power/helix_engine/app_engine/performance_freqs/performance_bfreq
+			echo 1593600 > /sys/power/helix_engine/app_engine/performance_freqs/performance_lfreq
+			echo 0 > /sys/power/helix_engine/app_engine/user/battery
+			echo 0 > /sys/power/helix_engine/app_engine/user/balanced
+			echo 0 > /sys/power/helix_engine/app_engine/user/performance
 		fi
 	elif [ "$pwrutilx_available" == "false" ] && [ "$schedutil_available" == "true" ]; then
 		if [ -e $string1 ]; then
