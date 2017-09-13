@@ -16,15 +16,15 @@ echo "\m/"
 echo "Let's go"
 
 #Disable BCL
-if [ -e "/sys/devices/soc/soc:qcom,bcl/mode" ]; then
+if [ -e /sys/devices/soc/soc:qcom,bcl/mode ]; then
 	echo "Disabling BCL and Removing Perfd"
 	chmod 644 /sys/devices/soc/soc:qcom,bcl/mode
 	echo -n disable > /sys/devices/soc/soc:qcom,bcl/mode
 fi
-if [ -e "/data/system/perfd" ]; then
+if [ -e /data/system/perfd ]; then
 	stop perfd
 fi
-if [ -e "/data/system/perfd/default_values" ]; then
+if [ -e /data/system/perfd/default_values ]; then
 	rm /data/system/perfd/default_values
 fi
 #turn on all cores
@@ -281,132 +281,130 @@ if [ -e /sys/power/pnpmgr/touch_boost ]; then
 	echo 0 > /sys/power/pnpmgr/touch_boost
 fi
 #I/0 & block tweaks
-if [ -d /sys/block/mmcblk0/queue/scheduler ]; then
-	string3=/block/mmcblk0/queue/scheduler;
-	deadline=false;
-	bfq=false;
-	if grep 'deadline' $string3; then
-   		deadline=true;
+string3=/block/mmcblk0/queue/scheduler;
+deadline=false;
+bfq=false;
+if grep 'deadline' $string3; then
+	deadline=true;
+fi
+if grep 'bfq' $string3; then
+	bfq=true;
+fi
+if [ "$deadline" == "true" ]; then
+	if [ -e $string3 ]; then
+		echo "setting deadline"
+		echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
+		echo "deadline" > /sys/block/mmcblk0/queue/scheduler
+		echo 16 > /sys/block/mmcblk0/queue/iosched/fifo_batch
+		echo 1 > /sys/block/mmcblk0/queue/iosched/front_merges
+		echo 250 > /sys/block/mmcblk0/queue/iosched/read_expire
+		echo 2500 > /sys/block/mmcblk0/queue/iosched/write_expire
+		echo 1 > /sys/block/mmcblk0/queue/iosched/writes_starved
+		echo 0 > /sys/block/mmcblk0/queue/add_random
+		echo 0 > /sys/block/mmcblk0/queue/iostats
+		echo 1 > /sys/block/mmcblk0/queue/nomerges
+		echo 0 > /sys/block/mmcblk0/queue/rotational
+		echo 1 > /sys/block/mmcblk0/queue/rq_affinity
+		echo 1024 > /sys/block/mmcblk1/bdi/read_ahead_kb
+		echo "deadline" > /sys/block/mmcblk1/queue/scheduler
+		echo 16 > /sys/block/mmcblk1/queue/iosched/fifo_batch
+		echo 1 > /sys/block/mmcblk1/queue/iosched/front_merges
+		echo 250 > /sys/block/mmcblk1/queue/iosched/read_expire
+		echo 2500 > /sys/block/mmcblk1/queue/iosched/write_expire
+		echo 1 > /sys/block/mmcblk1/queue/iosched/writes_starved
+		echo 0 > /sys/block/mmcblk1/queue/add_random
+		echo 0 > /sys/block/mmcblk1/queue/iostats
+		echo 1 > /sys/block/mmcblk1/queue/nomerges
+		echo 0 > /sys/block/mmcblk1/queue/rotational
+		echo 1 > /sys/block/mmcblk1/queue/rq_affinity
+		echo "deadline" > /sys/block/mmcblk0rpmb/queue/scheduler
+		echo 16 > /sys/block/mmcblk0rpmb/queue/iosched/fifo_batch
+		echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/front_merges
+		echo 250 > /sys/block/mmcblk0rpmb/queue/iosched/read_expire
+		echo 2500 > /sys/block/mmcblk0rpmb/queue/iosched/write_expire
+		echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/writes_starved
+		echo 0 > /sys/block/mmcblk0rpmb/queue/add_random
+		echo 0 > /sys/block/mmcblk0rpmb/queue/iostats
+		echo 1 > /sys/block/mmcblk0rpmb/queue/nomerges
+		echo 0 > /sys/block/mmcblk0rpmb/queue/rotational
+		echo 1 > /sys/block/mmcblk0rpmb/queue/rq_affinity
 	fi
-	if grep 'bfq' $string3; then
-   		bfq=true;
+elif [ "$deadline" == "false" ] && [ "bfq" == "true" ]; then
+	if [ -e $string3 ]; then
+		echo "setting bfq"
+		echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
+		echo "bfq" > /sys/block/mmcblk0/queue/scheduler
+		echo 16384 > /sys/block/mmcblk0/queue/iosched/back_seek_max
+		echo 1 > /sys/block/mmcblk0/queue/iosched/back_seek_penalty
+		echo 250 > /sys/block/mmcblk0/queue/iosched/fifo_expire_async
+		echo 120 > /sys/block/mmcblk0/queue/iosched/fifo_expire_sync
+		echo 1 > /sys/block/mmcblk0/queue/iosched/low_latency
+		echo 0 > /sys/block/mmcblk0/queue/iosched/max_budget
+		echo 4 > /sys/block/mmcblk0/queue/iosched/max_budget_async_rq
+		echo 0 > /sys/block/mmcblk0/queue/iosched/slice_idle
+		echo 40 > /sys/block/mmcblk0/queue/iosched/timeout_async
+		echo 120 > /sys/block/mmcblk0/queue/iosched/timeout_sync
+		echo 20 > /sys/block/mmcblk0/queue/iosched/wr_coeff
+		echo 7000 > /sys/block/mmcblk0/queue/iosched/wr_max_softrt_rate
+		echo 2250 > /sys/block/mmcblk0/queue/iosched/wr_max_time
+		echo 2000 > /sys/block/mmcblk0/queue/iosched/wr_min_idle_time
+		echo 500 > /sys/block/mmcblk0/queue/iosched/wr_min_inter_arr_async
+		echo 300 > /sys/block/mmcblk0/queue/iosched/wr_rt_max_time
+		echo 0 > /sys/block/mmcblk0/queue/add_random
+		echo 0 > /sys/block/mmcblk0/queue/iostats
+		echo 1 > /sys/block/mmcblk0/queue/nomerges
+		echo 0 > /sys/block/mmcblk0/queue/rotational
+		echo 1 > /sys/block/mmcblk1/queue/rq_affinity
+		echo 1024 > /sys/block/mmcblk1/bdi/read_ahead_kb
+		echo "bfq" > /sys/block/mmcblk1/queue/scheduler
+		echo 16384 > /sys/block/mmcblk1/queue/iosched/back_seek_max
+		echo 1 > /sys/block/mmcblk1/queue/iosched/back_seek_penalty
+		echo 250 > /sys/block/mmcblk1/queue/iosched/fifo_expire_async
+		echo 120 > /sys/block/mmcblk1/queue/iosched/fifo_expire_sync
+		echo 1 > /sys/block/mmcblk1/queue/iosched/low_latency
+		echo 0 > /sys/block/mmcblk1/queue/iosched/max_budget
+		echo 4 > /sys/block/mmcblk1/queue/iosched/max_budget_async_rq
+		echo 0 > /sys/block/mmcblk1/queue/iosched/slice_idle
+		echo 40 > /sys/block/mmcblk1/queue/iosched/timeout_async
+		echo 120 > /sys/block/mmcblk1/queue/iosched/timeout_sync
+		echo 20 > /sys/block/mmcblk1/queue/iosched/wr_coeff
+		echo 7000 > /sys/block/mmcblk1/queue/iosched/wr_max_softrt_rate
+		echo 2250 > /sys/block/mmcblk1/queue/iosched/wr_max_time
+		echo 2000 > /sys/block/mmcblk1/queue/iosched/wr_min_idle_time
+		echo 500 > /sys/block/mmcblk1/queue/iosched/wr_min_inter_arr_async
+		echo 300 > /sys/block/mmcblk1/queue/iosched/wr_rt_max_time
+		echo 0 > /sys/block/mmcblk1/queue/add_random
+		echo 0 > /sys/block/mmcblk1/queue/iostats
+		echo 1 > /sys/block/mmcblk1/queue/nomerges
+		echo 0 > /sys/block/mmcblk1/queue/rotational
+		echo 1 > /sys/block/mmcblk1/queue/rq_affinity
+		echo "bfq" > /sys/block/mmcblk0rpmb/queue/scheduler
+		echo 16384 > /sys/block/mmcblk0rpmb/queue/iosched/back_seek_max
+		echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/back_seek_penalty
+		echo 250 > /sys/block/mmcblk0rpmb/queue/iosched/fifo_expire_async
+		echo 120 > /sys/block/mmcblk0rpmb/queue/iosched/fifo_expire_sync
+		echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/low_latency
+		echo 0 > /sys/block/mmcblk0rpmb/queue/iosched/max_budget
+		echo 4 > /sys/block/mmcblk0rpmb/queue/iosched/max_budget_async_rq
+		echo 0 > /sys/block/mmcblk0rpmb/queue/iosched/slice_idle
+		echo 40 > /sys/block/mmcblk0rpmb/queue/iosched/timeout_async
+		echo 120 > /sys/block/mmcblk0rpmb/queue/iosched/timeout_sync
+		echo 20 > /sys/block/mmcblk0rpmb/queue/iosched/wr_coeff
+		echo 7000 > /sys/block/mmcblk0rpmb/queue/iosched/wr_max_softrt_rate
+		echo 2250 > /sys/block/mmcblk0rpmb/queue/iosched/wr_max_time
+		echo 2000 > /sys/block/mmcblk0rpmb/queue/iosched/wr_min_idle_time
+		echo 500 > /sys/block/mmcblk0rpmb/queue/iosched/wr_min_inter_arr_async
+		echo 300 > /sys/block/mmcblk0rpmb/queue/iosched/wr_rt_max_time
+		echo 0 > /sys/block/mmcblk0rpmb/queue/add_random
+		echo 0 > /sys/block/mmcblk0rpmb/queue/iostats
+		echo 1 > /sys/block/mmcblk0rpmb/queue/nomerges
+		echo 0 > /sys/block/mmcblk0rpmb/queue/rotational
+		echo 1 > /sys/block/mmcblk0rpmb/queue/rq_affinity
 	fi
-	if [ "$deadline" == "true" ]; then
-		if [ -e $string3 ]; then
-			echo "setting deadline"
-			echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
-			echo "deadline" > /sys/block/mmcblk0/queue/scheduler
-			echo 16 > /sys/block/mmcblk0/queue/iosched/fifo_batch
-			echo 1 > /sys/block/mmcblk0/queue/iosched/front_merges
-			echo 250 > /sys/block/mmcblk0/queue/iosched/read_expire
-			echo 2500 > /sys/block/mmcblk0/queue/iosched/write_expire
-			echo 1 > /sys/block/mmcblk0/queue/iosched/writes_starved
-			echo 0 > /sys/block/mmcblk0/queue/add_random
-			echo 0 > /sys/block/mmcblk0/queue/iostats
-			echo 1 > /sys/block/mmcblk0/queue/nomerges
-			echo 0 > /sys/block/mmcblk0/queue/rotational
-			echo 1 > /sys/block/mmcblk0/queue/rq_affinity
-			echo 1024 > /sys/block/mmcblk1/bdi/read_ahead_kb
-			echo "deadline" > /sys/block/mmcblk1/queue/scheduler
-			echo 16 > /sys/block/mmcblk1/queue/iosched/fifo_batch
-			echo 1 > /sys/block/mmcblk1/queue/iosched/front_merges
-			echo 250 > /sys/block/mmcblk1/queue/iosched/read_expire
-			echo 2500 > /sys/block/mmcblk1/queue/iosched/write_expire
-			echo 1 > /sys/block/mmcblk1/queue/iosched/writes_starved
-			echo 0 > /sys/block/mmcblk1/queue/add_random
-			echo 0 > /sys/block/mmcblk1/queue/iostats
-			echo 1 > /sys/block/mmcblk1/queue/nomerges
-			echo 0 > /sys/block/mmcblk1/queue/rotational
-			echo 1 > /sys/block/mmcblk1/queue/rq_affinity
-			echo "deadline" > /sys/block/mmcblk0rpmb/queue/scheduler
-			echo 16 > /sys/block/mmcblk0rpmb/queue/iosched/fifo_batch
-			echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/front_merges
-			echo 250 > /sys/block/mmcblk0rpmb/queue/iosched/read_expire
-			echo 2500 > /sys/block/mmcblk0rpmb/queue/iosched/write_expire
-			echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/writes_starved
-			echo 0 > /sys/block/mmcblk0rpmb/queue/add_random
-			echo 0 > /sys/block/mmcblk0rpmb/queue/iostats
-			echo 1 > /sys/block/mmcblk0rpmb/queue/nomerges
-			echo 0 > /sys/block/mmcblk0rpmb/queue/rotational
-			echo 1 > /sys/block/mmcblk0rpmb/queue/rq_affinity
-		fi
-	elif [ "$deadline" == "false" ] && [ "bfq" == "true" ]; then
-		if [ -e $string3 ]; then
-			echo "setting bfq"
-			echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
-			echo "bfq" > /sys/block/mmcblk0/queue/scheduler
-			echo 16384 > /sys/block/mmcblk0/queue/iosched/back_seek_max
-			echo 1 > /sys/block/mmcblk0/queue/iosched/back_seek_penalty
-			echo 250 > /sys/block/mmcblk0/queue/iosched/fifo_expire_async
-			echo 120 > /sys/block/mmcblk0/queue/iosched/fifo_expire_sync
-			echo 1 > /sys/block/mmcblk0/queue/iosched/low_latency
-			echo 0 > /sys/block/mmcblk0/queue/iosched/max_budget
-			echo 4 > /sys/block/mmcblk0/queue/iosched/max_budget_async_rq
-			echo 0 > /sys/block/mmcblk0/queue/iosched/slice_idle
-			echo 40 > /sys/block/mmcblk0/queue/iosched/timeout_async
-			echo 120 > /sys/block/mmcblk0/queue/iosched/timeout_sync
-			echo 20 > /sys/block/mmcblk0/queue/iosched/wr_coeff
-			echo 7000 > /sys/block/mmcblk0/queue/iosched/wr_max_softrt_rate
-			echo 2250 > /sys/block/mmcblk0/queue/iosched/wr_max_time
-			echo 2000 > /sys/block/mmcblk0/queue/iosched/wr_min_idle_time
-			echo 500 > /sys/block/mmcblk0/queue/iosched/wr_min_inter_arr_async
-			echo 300 > /sys/block/mmcblk0/queue/iosched/wr_rt_max_time
-			echo 0 > /sys/block/mmcblk0/queue/add_random
-			echo 0 > /sys/block/mmcblk0/queue/iostats
-			echo 1 > /sys/block/mmcblk0/queue/nomerges
-			echo 0 > /sys/block/mmcblk0/queue/rotational
-			echo 1 > /sys/block/mmcblk1/queue/rq_affinity
-			echo 1024 > /sys/block/mmcblk1/bdi/read_ahead_kb
-			echo "bfq" > /sys/block/mmcblk1/queue/scheduler
-			echo 16384 > /sys/block/mmcblk1/queue/iosched/back_seek_max
-			echo 1 > /sys/block/mmcblk1/queue/iosched/back_seek_penalty
-			echo 250 > /sys/block/mmcblk1/queue/iosched/fifo_expire_async
-			echo 120 > /sys/block/mmcblk1/queue/iosched/fifo_expire_sync
-			echo 1 > /sys/block/mmcblk1/queue/iosched/low_latency
-			echo 0 > /sys/block/mmcblk1/queue/iosched/max_budget
-			echo 4 > /sys/block/mmcblk1/queue/iosched/max_budget_async_rq
-			echo 0 > /sys/block/mmcblk1/queue/iosched/slice_idle
-			echo 40 > /sys/block/mmcblk1/queue/iosched/timeout_async
-			echo 120 > /sys/block/mmcblk1/queue/iosched/timeout_sync
-			echo 20 > /sys/block/mmcblk1/queue/iosched/wr_coeff
-			echo 7000 > /sys/block/mmcblk1/queue/iosched/wr_max_softrt_rate
-			echo 2250 > /sys/block/mmcblk1/queue/iosched/wr_max_time
-			echo 2000 > /sys/block/mmcblk1/queue/iosched/wr_min_idle_time
-			echo 500 > /sys/block/mmcblk1/queue/iosched/wr_min_inter_arr_async
-			echo 300 > /sys/block/mmcblk1/queue/iosched/wr_rt_max_time
-			echo 0 > /sys/block/mmcblk1/queue/add_random
-			echo 0 > /sys/block/mmcblk1/queue/iostats
-			echo 1 > /sys/block/mmcblk1/queue/nomerges
-			echo 0 > /sys/block/mmcblk1/queue/rotational
-			echo 1 > /sys/block/mmcblk1/queue/rq_affinity
-			echo "bfq" > /sys/block/mmcblk0rpmb/queue/scheduler
-			echo 16384 > /sys/block/mmcblk0rpmb/queue/iosched/back_seek_max
-			echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/back_seek_penalty
-			echo 250 > /sys/block/mmcblk0rpmb/queue/iosched/fifo_expire_async
-			echo 120 > /sys/block/mmcblk0rpmb/queue/iosched/fifo_expire_sync
-			echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/low_latency
-			echo 0 > /sys/block/mmcblk0rpmb/queue/iosched/max_budget
-			echo 4 > /sys/block/mmcblk0rpmb/queue/iosched/max_budget_async_rq
-			echo 0 > /sys/block/mmcblk0rpmb/queue/iosched/slice_idle
-			echo 40 > /sys/block/mmcblk0rpmb/queue/iosched/timeout_async
-			echo 120 > /sys/block/mmcblk0rpmb/queue/iosched/timeout_sync
-			echo 20 > /sys/block/mmcblk0rpmb/queue/iosched/wr_coeff
-			echo 7000 > /sys/block/mmcblk0rpmb/queue/iosched/wr_max_softrt_rate
-			echo 2250 > /sys/block/mmcblk0rpmb/queue/iosched/wr_max_time
-			echo 2000 > /sys/block/mmcblk0rpmb/queue/iosched/wr_min_idle_time
-			echo 500 > /sys/block/mmcblk0rpmb/queue/iosched/wr_min_inter_arr_async
-			echo 300 > /sys/block/mmcblk0rpmb/queue/iosched/wr_rt_max_time
-			echo 0 > /sys/block/mmcblk0rpmb/queue/add_random
-			echo 0 > /sys/block/mmcblk0rpmb/queue/iostats
-			echo 1 > /sys/block/mmcblk0rpmb/queue/nomerges
-			echo 0 > /sys/block/mmcblk0rpmb/queue/rotational
-			echo 1 > /sys/block/mmcblk0rpmb/queue/rq_affinity
-		fi
-	else
-    		if [ -e $string3 ]; then
+else
+	if [ -e $string3 ]; then
 		echo "I/0 governor won't be changed"
-    		fi
-	fi
+    	fi
 fi
 #TCP tweaks
 if [ -d /proc/sys/net/ipv4/tcp_congestion_control ]; then
