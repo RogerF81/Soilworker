@@ -55,7 +55,7 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 	schedutil_available=false;
 	pnp_available=false;
 	if grep 'pwrutilx' $string1; then
-		prwutilx_available=true;
+		pwrutilx_available=true;
 	fi
 	if grep 'schedutil' $string1; then
 		schedutil_available=true;
@@ -284,7 +284,7 @@ if [ -e "/sys/power/pnpmgr/touch_boost" ]; then
 	echo 0 > /sys/power/pnpmgr/touch_boost
 fi
 #I/0 & block tweaks
-if [ -d /sys/block/mmcblk0/queue/scheduler ]; then
+if [ -d "/sys/block/mmcblk0/queue/scheduler" ]; then
 	string3=/block/mmcblk0/queue/scheduler;
 	maple=false;
 	noop=false;
