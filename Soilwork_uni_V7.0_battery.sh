@@ -193,7 +193,6 @@ else
 		fi
 	fi
 fi
-fi
 #Apply settings to Big cluster
 echo Changing governor at big cluster
 
@@ -255,7 +254,6 @@ else
 		fi
     fi
 fi
-fi
 #Disable input boost
 if [ -e "/sys/kernel/cpu_input_boost" ]; then
 	chmod 644 /sys/kernel/cpu_input_boost/enable
@@ -283,7 +281,6 @@ if [ -e "/sys/power/pnpmgr/touch_boost" ]; then
 	chmod 644 /sys/power/pnpmgr/touch_boost
 	echo 0 > /sys/power/pnpmgr/touch_boost
 fi
-
 #I/0 & block tweaks
 string3=/block/mmcblk0/queue/scheduler;
 maple=false;
@@ -370,7 +367,6 @@ else
 		echo "I/0 governor won't be changed"
     fi
 fi
-fi
 #TCP tweaks
 echo westwood > /proc/sys/net/ipv4/tcp_congestion_control
 echo 2 > /proc/sys/net/ipv4/tcp_ecn
@@ -451,8 +447,7 @@ if [ "$GPU_OC" == "true" ]; then
 		chmod 644 /sys/devices/soc/b00000.qcom,kgsl-3d0/devfreq/b00000.qcom,kgsl-3d0/adrenoboost
 		echo 1 > /sys/devices/soc/b00000.qcom,kgsl-3d0/devfreq/b00000.qcom,kgsl-3d0/adrenoboost
     fi
-fi
-if [ "$GPU_OC" == "false" ]; then
+else
 	if [ -e $GPU_FREQ ]; then
 		chmod 644 /sys/class/kgsl/kgsl-3d0/max_gpuclk
 		echo 624000000 > /sys/class/kgsl/kgsl-3d0/max_gpuclk
@@ -463,7 +458,6 @@ if [ "$GPU_OC" == "false" ]; then
 		chmod 644 /sys/devices/soc/b00000.qcom,kgsl-3d0/devfreq/b00000.qcom,kgsl-3d0/adrenoboost
 		echo 1 > /sys/devices/soc/b00000.qcom,kgsl-3d0/devfreq/b00000.qcom,kgsl-3d0/adrenoboost
 	fi
-fi
 fi
 ##Pnp, if available
 if [ -e "/sys/power/pnpmgr" ]; then
