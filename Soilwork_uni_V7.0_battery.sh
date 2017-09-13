@@ -296,17 +296,23 @@ fi
 if [ "$maple" == "true" ]; then
 	if [ -e $string3 ]; then
 		echo "setting maple"
-		CONFIG_HZ_1000=y
-		CONFIG_HZ=1000
 		echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
 		echo "maple" > /sys/block/mmcblk0/queue/scheduler
 		echo 16 > /sys/block/mmcblk0/queue/iosched/fifo_batch
 		echo 4 > /sys/block/mmcblk0/queue/iosched/writes_starved
 		echo 10 > /sys/block/mmcblk0/queue/iosched/sleep_latency_multiple
-		echo 5 * HZ > /sys/block/mmcblk0/queue/iosched/async_read_expire
-		echo 5 * HZ > /sys/block/mmcblk0/queue/iosched/async_write_expire
-		echo HZ / 2 > /sys/block/mmcblk0/queue/iosched/sync_read_expire
-		echo HZ / 2 > /sys/block/mmcblk0/queue/iosched/sync_write_expire
+		#echo 200 > /sys/block/mmcblk0/queue/iosched/async_read_expire
+		#echo 500 > /sys/block/mmcblk0/queue/iosched/async_write_expire
+		#echo 100 > /sys/block/mmcblk0/queue/iosched/sync_read_expire
+		#echo 350 > /sys/block/mmcblk0/queue/iosched/sync_write_expire
+		#echo 5 * HZ > /sys/block/mmcblk0/queue/iosched/async_read_expire
+		#echo 5 * HZ > /sys/block/mmcblk0/queue/iosched/async_write_expire
+		#echo HZ / 2 > /sys/block/mmcblk0/queue/iosched/sync_read_expire
+		#echo HZ /2 > /sys/block/mmcblk0/queue/iosched/sync_write_expire
+		echo 500 > /sys/block/mmcblk0/queue/iosched/async_read_expire
+		echo 500 > /sys/block/mmcblk0/queue/iosched/async_write_expire
+		echo 150 > /sys/block/mmcblk0/queue/iosched/sync_read_expire
+		echo 150 > /sys/block/mmcblk0/queue/iosched/sync_write_expire
 		echo 128 > /sys/block/mmcblk0/queue/nr_requests
 		echo 0 > /sys/block/mmcblk0/queue/add_random
 		echo 0 > /sys/block/mmcblk0/queue/iostats
