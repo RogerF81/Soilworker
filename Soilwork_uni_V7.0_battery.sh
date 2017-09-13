@@ -296,6 +296,8 @@ fi
 if [ "$maple" == "true" ]; then
 	if [ -e $string3 ]; then
 		echo "setting maple"
+		CONFIG_HZ_1000=y
+		CONFIG_HZ=1000
 		echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
 		echo "maple" > /sys/block/mmcblk0/queue/scheduler
 		echo 16 > /sys/block/mmcblk0/queue/iosched/fifo_batch
@@ -370,34 +372,32 @@ else
   	fi
 fi
 #TCP tweaks
-if [ -d /proc/sys/net/ipv4/tcp_available_congestion_control ]; then
-	string4=/proc/sys/net/ipv4/tcp_available_congestion_control;
-	westwood=false;
-	if grep 'westwood' $string4; then
-		westwood=true;
+string4=/proc/sys/net/ipv4/tcp_available_congestion_control;
+westwood=false;
+if grep 'westwood' $string4; then
+	westwood=true;
+fi
+if [ "$westwood" == "true" ]; then
+	if [ -e $string4 ]; then
+		echo "setting westwood"
+		echo westwood > /proc/sys/net/ipv4/tcp_congestion_control
+		echo 2 > /proc/sys/net/ipv4/tcp_ecn
+		echo 1 > /proc/sys/net/ipv4/tcp_dsack
+		echo 1 > /proc/sys/net/ipv4/tcp_low_latency
+		echo 1 > /proc/sys/net/ipv4/tcp_timestamps
+		echo 1 > /proc/sys/net/ipv4/tcp_sack
+		echo 1 > /proc/sys/net/ipv4/tcp_window_scaling
 	fi
-	if [ "$westwood" == "true" ]; then
-		if [ -e $string4 ]; then
-			echo "setting westwood"
-			echo westwood > /proc/sys/net/ipv4/tcp_congestion_control
-			echo 2 > /proc/sys/net/ipv4/tcp_ecn
-			echo 1 > /proc/sys/net/ipv4/tcp_dsack
-			echo 1 > /proc/sys/net/ipv4/tcp_low_latency
-			echo 1 > /proc/sys/net/ipv4/tcp_timestamps
-			echo 1 > /proc/sys/net/ipv4/tcp_sack
-			echo 1 > /proc/sys/net/ipv4/tcp_window_scaling
-		fi
-	else
-		if [ -e $string4 ]; then
-			echo "setting cubic"
-			echo cubic > /proc/sys/net/ipv4/tcp_congestion_control
-			echo 2 > /proc/sys/net/ipv4/tcp_ecn
-			echo 1 > /proc/sys/net/ipv4/tcp_dsack
-			echo 1 > /proc/sys/net/ipv4/tcp_low_latency
-			echo 1 > /proc/sys/net/ipv4/tcp_timestamps
-			echo 1 > /proc/sys/net/ipv4/tcp_sack
-			echo 1 > /proc/sys/net/ipv4/tcp_window_scaling
-		fi
+else
+	if [ -e $string4 ]; then
+		echo "setting cubic"
+		echo cubic > /proc/sys/net/ipv4/tcp_congestion_control
+		echo 2 > /proc/sys/net/ipv4/tcp_ecn
+		echo 1 > /proc/sys/net/ipv4/tcp_dsack
+		echo 1 > /proc/sys/net/ipv4/tcp_low_latency
+		echo 1 > /proc/sys/net/ipv4/tcp_timestamps
+		echo 1 > /proc/sys/net/ipv4/tcp_sack
+		echo 1 > /proc/sys/net/ipv4/tcp_window_scaling
 	fi
 fi
 ## Wakelocks
