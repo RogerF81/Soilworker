@@ -44,6 +44,7 @@ print_modname() {
   ui_print "*******************************"
   ui_print "           Unified             "
   ui_print "     battery kernel-tweaks     "
+  ui_print "          V10 FINAL            "
   ui_print "*******************************"
 }
 
