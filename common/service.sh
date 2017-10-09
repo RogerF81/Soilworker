@@ -10,9 +10,9 @@ MODDIR=${0%/*}
 #Device: HTC 10 (perfume)
 #Codename: Soilworker_UNI
 #SoC: Snapdragon 820
-#Build Status: stable
-#Version: 8.0
-#Last Updated: 09/13/2017
+#Build Status: Final
+#Version: 10.0
+#Last Updated: 10/10/2017
 #Credits: @Alcolawl @soniCron @Asiier @Freak07 @Mostafa Wael @Senthil360 @TotallyAnxious @Eliminater74 @RenderBroken @ZeroInfinity @Kyuubi10 @ivicask
 sleep 30
 echo "----------------------------------------------------"
@@ -77,13 +77,18 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 			echo "setting pwrutilx"
 			echo pwrutilx > $GOV_PATH/scaling_governor
 			echo 96 > /proc/sys/kernel/sched_nr_migrate
+			echo 0-3 > /dev/cpuset/top-app/cpus
+			echo 0-3 > /dev/cpuset/foreground/boost/cpus
+			echo 2-3 > /dev/cpuset/foreground/cpus
+			echo 0 > /dev/cpuset/background/cpus
+			echo 0-1 > /dev/cpuset/system-background/cpus
 			echo 0 > /dev/stune/schedtune.prefer_idle
 			echo 0 > /dev/stune/background/schedtune.prefer_idle
 			echo 1 > /dev/stune/foreground/schedtune.prefer_idle
 			echo 1 > /dev/stune/top-app/schedtune.prefer_idle
 			echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/pwrutilx/iowait_boost_enable
-			echo 800 > /sys/devices/system/cpu/cpu0/cpufreq/pwrutilx/up_rate_limit_us
-			echo 4000 > /sys/devices/system/cpu/cpu0/cpufreq/pwrutilx/down_rate_limit_us
+			echo 500 > /sys/devices/system/cpu/cpu0/cpufreq/pwrutilx/up_rate_limit_us
+			echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/pwrutilx/down_rate_limit_us
 			if [ -e /proc/sys/kernel/sched_autogroup_enabled ]; then
 				echo 0 > /proc/sys/kernel/sched_autogroup_enabled
 			fi
@@ -93,13 +98,23 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 				echo 1 > /proc/sys/kernel/sched_is_big_little
 			fi
 			echo 0 > /proc/sys/kernel/sched_initial_task_util
-			if [ -e "proc/sys/kernel/sched_boost ]; then
+			if [ -e /proc/sys/kernel/sched_boost ]; then
 				echo 0 > /proc/sys/kernel/sched_boost
 			fi
-			if [ -e /proc/sys/kernel/sched_use_walt_task_util ]; then
-				echo 0 > /proc/sys/kernel/sched_use_walt_task_util
-				echo 0 > /proc/sys/kernel/sched_use_walt_cpu_util
-				echo 0 > /proc/sys/kernel/sched_walt_init_task_load_pct
+			if [ -e "/proc/sys/kernel/sched_use_walt_task_util" ]; then
+				echo 1 > /proc/sys/kernel/sched_use_walt_task_util
+				echo 1 > /proc/sys/kernel/sched_use_walt_cpu_util
+				echo 10 > /proc/sys/kernel/sched_walt_init_task_load_pct
+				echo 10000000 > /proc/sys/kernel/sched_walt_cpu_high_irqload
+			fi
+			if [ -e "/proc/sys/kernel/sched_latency_ns" ]; then
+				echo 10000000 > /proc/sys/kernel/sched_latency_ns
+			fi
+			if [ -e "/proc/sys/kernel/sched_wakeup_granularity_ns" ]; then
+				echo 2000000 > /proc/sys/kernel/sched_wakeup_granularity_ns
+			fi
+			if [ -e "/proc/sys/kernel/sched_min_granularity_ns" ]; then
+				echo 3000000 > /proc/sys/kernel/sched_min_granularity_ns
 			fi
 			echo 1 > /sys/power/helix_engine/helix_engine_enable
 			echo 1 > /sys/power/helix_engine/thermal_engine_enable
@@ -125,11 +140,18 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 			echo "setting schedutil"
 			echo schedutil > $GOV_PATH/scaling_governor
 			chmod 664 /dev/stune/top-app/schedtune.boost
-			echo 10 > /dev/stune/top-app/schedtune.boost
+			echo 3 > /dev/stune/top-app/schedtune.boost
 			echo 96 > /proc/sys/kernel/sched_nr_migrate
+			echo 0-3 > /dev/cpuset/top-app/cpus
+			echo 0-3 > /dev/cpuset/foreground/boost/cpus
+			echo 2-3 > /dev/cpuset/foreground/cpus
+			echo 0 > /dev/cpuset/background/cpus
+			echo 0-1 > /dev/cpuset/system-background/cpus
 			echo 0 > /dev/stune/background/schedtune.prefer_idle
 			echo 1 > /dev/stune/foreground/schedtune.prefer_idle
 			echo 1 > /dev/stune/top-app/schedtune.prefer_idle
+			echo 500 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/up_rate_limit_us
+			echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/down_rate_limit_us
 			if [ -e /proc/sys/kernel/sched_autogroup_enabled ]; then
 				echo 0 > /proc/sys/kernel/sched_autogroup_enabled
 			fi
@@ -142,10 +164,20 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 			if [ -e /proc/sys/kernel/sched_boost ]; then
 				echo 0 > /proc/sys/kernel/sched_boost
 			fi
-			if [ -e /proc/sys/kernel/sched_use_walt_task_util ]; then
-				echo 0 > /proc/sys/kernel/sched_use_walt_task_util
-				echo 0 > /proc/sys/kernel/sched_use_walt_cpu_util
-				echo 0 > /proc/sys/kernel/sched_walt_init_task_load_pct
+			if [ -e "/proc/sys/kernel/sched_use_walt_task_util" ]; then
+				echo 1 > /proc/sys/kernel/sched_use_walt_task_util
+				echo 1 > /proc/sys/kernel/sched_use_walt_cpu_util
+				echo 10 > /proc/sys/kernel/sched_walt_init_task_load_pct
+				echo 10000000 > /proc/sys/kernel/sched_walt_cpu_high_irqload
+			fi
+			if [ -e "/proc/sys/kernel/sched_latency_ns" ]; then
+				echo 10000000 > /proc/sys/kernel/sched_latency_ns
+			fi
+			if [ -e "/proc/sys/kernel/sched_wakeup_granularity_ns" ]; then
+				echo 2000000 > /proc/sys/kernel/sched_wakeup_granularity_ns
+			fi
+			if [ -e "/proc/sys/kernel/sched_min_granularity_ns" ]; then
+				echo 3000000 > /proc/sys/kernel/sched_min_granularity_ns
 			fi
 		fi
 	else
@@ -240,13 +272,15 @@ if [ -d /sys/devices/system/cpu/cpu2/cpufreq ]; then
 			echo "setting pwrutilx"
 			echo pwrutilx > $GOV_big_PATH/scaling_governor
 			echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/pwrutilx/iowait_boost_enable
-			echo 800 > /sys/devices/system/cpu/cpu2/cpufreq/pwrutilx/up_rate_limit_us
-			echo 3000 > /sys/devices/system/cpu/cpu2/cpufreq/pwrutilx/down_rate_limit_us		
+			echo 2000 > /sys/devices/system/cpu/cpu2/cpufreq/pwrutilx/up_rate_limit_us
+			echo 5000 > /sys/devices/system/cpu/cpu2/cpufreq/pwrutilx/down_rate_limit_us		
 		fi
 	elif [ "$pwrutilx_available_big" == "false" ] && [ "$schedutil_available_big" == "true" ]; then
 		if [ -e $string2 ]; then
 			echo "setting schedutil"
 			echo schedutil > $GOV_big_PATH/scaling_governor
+			echo 2000 > /sys/devices/system/cpu/cpu2/cpufreq/schedutil/up_rate_limit_us
+			echo 5000 > /sys/devices/system/cpu/cpu2/cpufreq/schedutil/down_rate_limit_us		
 		fi
 	else
    		if [ -e $string2 ]; then
@@ -307,12 +341,12 @@ fi
 #I/0 & block tweaks
 string3=/sys/block/mmcblk0/queue/scheduler;
 deadline=false;
-bfq=false;
+cfq=false;
 if grep 'deadline' $string3; then
 	deadline=true;
 fi
-if grep 'bfq' $string3; then
-	bfq=true;
+if grep 'cfq' $string3; then
+	cfq=true;
 fi
 if [ "$deadline" == "true" ]; then
 	if [ -e $string3 ]; then
@@ -353,72 +387,60 @@ if [ "$deadline" == "true" ]; then
 		echo 0 > /sys/block/mmcblk0rpmb/queue/rotational
 		echo 1 > /sys/block/mmcblk0rpmb/queue/rq_affinity
 	fi
-elif [ "$deadline" == "false" ] && [ "bfq" == "true" ]; then
+elif [ "$deadline" == "false" ] && [ "cfq" == "true" ]; then
 	if [ -e $string3 ]; then
-		echo "setting bfq"
+		echo "setting cfq"
 		echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
-		echo "bfq" > /sys/block/mmcblk0/queue/scheduler
-		echo 16384 > /sys/block/mmcblk0/queue/iosched/back_seek_max
+		echo "cfq" > /sys/block/mmcblk0/queue/scheduler
 		echo 1 > /sys/block/mmcblk0/queue/iosched/back_seek_penalty
-		echo 250 > /sys/block/mmcblk0/queue/iosched/fifo_expire_async
+		echo 16384 > /sys/block/mmcblk0/queue/iosched/back_seek_max
 		echo 120 > /sys/block/mmcblk0/queue/iosched/fifo_expire_sync
-		echo 1 > /sys/block/mmcblk0/queue/iosched/low_latency
-		echo 0 > /sys/block/mmcblk0/queue/iosched/max_budget
-		echo 4 > /sys/block/mmcblk0/queue/iosched/max_budget_async_rq
+		echo 250 > /sys/block/mmcblk0/queue/iosched/fifo_expire_async
 		echo 0 > /sys/block/mmcblk0/queue/iosched/slice_idle
-		echo 40 > /sys/block/mmcblk0/queue/iosched/timeout_async
-		echo 120 > /sys/block/mmcblk0/queue/iosched/timeout_sync
-		echo 20 > /sys/block/mmcblk0/queue/iosched/wr_coeff
-		echo 7000 > /sys/block/mmcblk0/queue/iosched/wr_max_softrt_rate
-		echo 2250 > /sys/block/mmcblk0/queue/iosched/wr_max_time
-		echo 2000 > /sys/block/mmcblk0/queue/iosched/wr_min_idle_time
-		echo 500 > /sys/block/mmcblk0/queue/iosched/wr_min_inter_arr_async
-		echo 300 > /sys/block/mmcblk0/queue/iosched/wr_rt_max_time
+		echo 8 > /sys/block/mmcblk0/queue/iosched/group_idle
+		echo 1 > /sys/block/mmcblk0/queue/iosched/low_latency
+		echo 10 > /sys/block/mmcblk0/queue/iosched/quantum
+		echo 40 > /sys/block/mmcblk0/queue/iosched/slice_async
+		echo 2 > /sys/block/mmcblk0/queue/iosched/slice_async_rq
+		echo 100 > /sys/block/mmcblk0/queue/iosched/slice_sync
+		echo 300 > /sys/block/mmcblk0/queue/iosched/target_latencymax_time
 		echo 0 > /sys/block/mmcblk0/queue/add_random
 		echo 0 > /sys/block/mmcblk0/queue/iostats
 		echo 1 > /sys/block/mmcblk0/queue/nomerges
 		echo 0 > /sys/block/mmcblk0/queue/rotational
 		echo 1 > /sys/block/mmcblk1/queue/rq_affinity
 		echo 1024 > /sys/block/mmcblk1/bdi/read_ahead_kb
-		echo "bfq" > /sys/block/mmcblk1/queue/scheduler
-		echo 16384 > /sys/block/mmcblk1/queue/iosched/back_seek_max
+		echo "cfq" > /sys/block/mmcblk1/queue/scheduler
 		echo 1 > /sys/block/mmcblk1/queue/iosched/back_seek_penalty
-		echo 250 > /sys/block/mmcblk1/queue/iosched/fifo_expire_async
+		echo 16384 > /sys/block/mmcblk1/queue/iosched/back_seek_max
 		echo 120 > /sys/block/mmcblk1/queue/iosched/fifo_expire_sync
-		echo 1 > /sys/block/mmcblk1/queue/iosched/low_latency
-		echo 0 > /sys/block/mmcblk1/queue/iosched/max_budget
-		echo 4 > /sys/block/mmcblk1/queue/iosched/max_budget_async_rq
+		echo 250 > /sys/block/mmcblk1/queue/iosched/fifo_expire_async
 		echo 0 > /sys/block/mmcblk1/queue/iosched/slice_idle
-		echo 40 > /sys/block/mmcblk1/queue/iosched/timeout_async
-		echo 120 > /sys/block/mmcblk1/queue/iosched/timeout_sync
-		echo 20 > /sys/block/mmcblk1/queue/iosched/wr_coeff
-		echo 7000 > /sys/block/mmcblk1/queue/iosched/wr_max_softrt_rate
-		echo 2250 > /sys/block/mmcblk1/queue/iosched/wr_max_time
-		echo 2000 > /sys/block/mmcblk1/queue/iosched/wr_min_idle_time
-		echo 500 > /sys/block/mmcblk1/queue/iosched/wr_min_inter_arr_async
-		echo 300 > /sys/block/mmcblk1/queue/iosched/wr_rt_max_time
+		echo 8 > /sys/block/mmcblk1/queue/iosched/group_idle
+		echo 1 > /sys/block/mmcblk1/queue/iosched/low_latency
+		echo 10 > /sys/block/mmcblk1/queue/iosched/quantum
+		echo 40 > /sys/block/mmcblk1/queue/iosched/slice_async
+		echo 2 > /sys/block/mmcblk1/queue/iosched/slice_async_rq
+		echo 100 > /sys/block/mmcblk1/queue/iosched/slice_sync
+		echo 300 > /sys/block/mmcblk1/queue/iosched/target_latencymax_time
 		echo 0 > /sys/block/mmcblk1/queue/add_random
 		echo 0 > /sys/block/mmcblk1/queue/iostats
 		echo 1 > /sys/block/mmcblk1/queue/nomerges
 		echo 0 > /sys/block/mmcblk1/queue/rotational
 		echo 1 > /sys/block/mmcblk1/queue/rq_affinity
-		echo "bfq" > /sys/block/mmcblk0rpmb/queue/scheduler
-		echo 16384 > /sys/block/mmcblk0rpmb/queue/iosched/back_seek_max
+		echo "cfq" > /sys/block/mmcblk0rpmb/queue/scheduler
 		echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/back_seek_penalty
-		echo 250 > /sys/block/mmcblk0rpmb/queue/iosched/fifo_expire_async
+		echo 16384 > /sys/block/mmcblk0rpmb/queue/iosched/back_seek_max
 		echo 120 > /sys/block/mmcblk0rpmb/queue/iosched/fifo_expire_sync
-		echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/low_latency
-		echo 0 > /sys/block/mmcblk0rpmb/queue/iosched/max_budget
-		echo 4 > /sys/block/mmcblk0rpmb/queue/iosched/max_budget_async_rq
+		echo 250 > /sys/block/mmcblk0rpmb/queue/iosched/fifo_expire_async
 		echo 0 > /sys/block/mmcblk0rpmb/queue/iosched/slice_idle
-		echo 40 > /sys/block/mmcblk0rpmb/queue/iosched/timeout_async
-		echo 120 > /sys/block/mmcblk0rpmb/queue/iosched/timeout_sync
-		echo 20 > /sys/block/mmcblk0rpmb/queue/iosched/wr_coeff
-		echo 7000 > /sys/block/mmcblk0rpmb/queue/iosched/wr_max_softrt_rate
-		echo 2250 > /sys/block/mmcblk0rpmb/queue/iosched/wr_max_time
-		echo 2000 > /sys/block/mmcblk0rpmb/queue/iosched/wr_min_idle_time
-		echo 500 > /sys/block/mmcblk0rpmb/queue/iosched/wr_min_inter_arr_async
-		echo 300 > /sys/block/mmcblk0rpmb/queue/iosched/wr_rt_max_time
+		echo 8 > /sys/block/mmcblk0rpmb/queue/iosched/group_idle
+		echo 1 > /sys/block/mmcblk0rpmb/queue/iosched/low_latency
+		echo 10 > /sys/block/mmcblk0rpmb/queue/iosched/quantum
+		echo 40 > /sys/block/mmcblk0rpmb/queue/iosched/slice_async
+		echo 2 > /sys/block/mmcblk0rpmb/queue/iosched/slice_async_rq
+		echo 100 > /sys/block/mmcblk0rpmb/queue/iosched/slice_sync
+		echo 300 > /sys/block/mmcblk0rpmb/queue/iosched/target_latencymax_time
 		echo 0 > /sys/block/mmcblk0rpmb/queue/add_random
 		echo 0 > /sys/block/mmcblk0rpmb/queue/iostats
 		echo 1 > /sys/block/mmcblk0rpmb/queue/nomerges
@@ -428,7 +450,25 @@ elif [ "$deadline" == "false" ] && [ "bfq" == "true" ]; then
 else
 	if [ -e $string3 ]; then
 		echo "I/0 governor won't be changed"
-    	fi
+		echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
+		echo 0 > /sys/block/mmcblk0/queue/add_random
+		echo 0 > /sys/block/mmcblk0/queue/iostats
+		echo 1 > /sys/block/mmcblk0/queue/nomerges
+		echo 0 > /sys/block/mmcblk0/queue/rotational
+		echo 1 > /sys/block/mmcblk1/queue/rq_affinity
+		echo 1024 > /sys/block/mmcblk1/bdi/read_ahead_kb
+		echo 0 > /sys/block/mmcblk1/queue/add_random
+		echo 0 > /sys/block/mmcblk1/queue/iostats
+		echo 1 > /sys/block/mmcblk1/queue/nomerges
+		echo 0 > /sys/block/mmcblk1/queue/rotational
+		echo 1 > /sys/block/mmcblk1/queue/rq_affinity
+		echo 1024 > /sys/block/mmcblk0rpmb/bdi/read_ahead_kb
+		echo 0 > /sys/block/mmcblk0rpmb/queue/add_random
+		echo 0 > /sys/block/mmcblk0rpmb/queue/iostats
+		echo 1 > /sys/block/mmcblk0rpmb/queue/nomerges
+		echo 0 > /sys/block/mmcblk0rpmb/queue/rotational
+		echo 1 > /sys/block/mmcblk0rpmb/queue/rq_affinity	
+    fi
 fi
 #TCP tweaks
 string4=/proc/sys/net/ipv4/tcp_available_congestion_control;
@@ -460,32 +500,56 @@ else
 	fi
 fi
 ## Wakelocks
-if [ -e /sys/module/bcmdhd/parameters/wlrx_divide ]; then
+if [ -e "/sys/module/bcmdhd/parameters/wlrx_divide" ]; then
 	echo 10 > /sys/module/bcmdhd/parameters/wlrx_divide
 fi
-if [ -e /sys/module/bcmdhd/parameters/wlctrl_divide ]; then
+if [ -e "/sys/module/bcmdhd/parameters/wlctrl_divide" ]; then
 	echo 10 > /sys/module/bcmdhd/parameters/wlctrl_divide
 fi
-if [ -e /sys/module/wakeup/parameters/enable_wlan_rx_wake_ws ]; then
-	echo N > /sys/module/wakeup/parameters/enable_wlan_rx_wake_ws
+if [ -e "/sys/module/wakeup/parameters/enable_bluetooth_timer" ]; then
+	echo N > /sys/module/wakeup/parameters/enable_bluetooth_timer
 fi
-if [ -e /sys/module/wakeup/parameters/enable_wlan_ctrl_wake_ws ]; then
-	echo N > /sys/module/wakeup/parameters/enable_wlan_ctrl_wake_ws
-fi
-if [ -e /sys/module/wakeup/parameters/enable_wlan_wake_ws ]; then
-	echo N > /sys/module/wakeup/parameters/enable_wlan_wake_ws
-fi
-if [ -e /sys/module/wakeup/parameters/enable_bluedroid_timer_ws ]; then
-	echo N > /sys/module/wakeup/parameters/enable_bluedroid_timer_ws
-fi
-if [ -e /sys/module/wakeup/parameters/enable_ipa_ws ]; then
+if [ -e "/sys/module/wakeup/parameters/enable_ipa_ws" ]; then 
 	echo N > /sys/module/wakeup/parameters/enable_ipa_ws
 fi
-if [ -e /sys/module/wakeup/parameters/enable_wlan_extscan_wl_ws ]; then
+if [ -e "/sys/module/wakeup/parameters/enable_netlink_ws" ]; then
+	echo N > /sys/module/wakeup/parameters/enable_netlink_ws
+fi
+if [ -e "/sys/module/wakeup/parameters/enable_netmgr_wl_ws" ]; then
+	echo N > /sys/module/wakeup/parameters/enable_netmgr_wl_ws
+fi
+if [ -e "/sys/module/wakeup/parameters/enable_qcom_rx_wakelock_ws" ]; then 
+	echo N > /sys/module/wakeup/parameters/enable_qcom_rx_wakelock_ws
+fi
+if [ -e "/sys/module/wakeup/parameters/enable_timerfd_ws" ]; then
+	echo N > /sys/module/wakeup/parameters/enable_timerfd_ws
+fi
+if [ -e "/sys/module/wakeup/parameters/enable_wlan_extscan_wl_ws" ]; then 
 	echo N > /sys/module/wakeup/parameters/enable_wlan_extscan_wl_ws
 fi
-if [ -e /sys/module/wakeup/parameters/enable_qcom_rx_wakelock_ws ]; then
-	echo N > /sys/module/wakeup/parameters/enable_qcom_rx_wakelock_ws
+if [ -e "/sys/module/wakeup/parameters/enable_wlan_wow_wl_ws" ]; then 
+	echo N > /sys/module/wakeup/parameters/enable_wlan_wow_wl_ws
+fi
+if [ -e "/sys/module/wakeup/parameters/enable_wlan_ws" ]; then
+	echo N > /sys/module/wakeup/parameters/enable_wlan_ws
+fi
+if [ -e "/sys/module/wakeup/parameters/enable_timerfd_ws" ]; then
+	echo N > /sys/module/wakeup/parameters/enable_timerfd_ws
+fi
+if [ -e "/sys/module/wakeup/parameters/enable_netmgr_wl_ws" ]; then
+	echo N > /sys/module/wakeup/parameters/enable_netmgr_wl_ws
+fi
+if [ -e "/sys/module/wakeup/parameters/enable_wlan_wow_wl_ws" ]; then
+	echo N > /sys/module/wakeup/parameters/enable_wlan_wow_wl_ws
+fi
+if [ -e "/sys/module/wakeup/parameters/enable_wlan_ipa_ws" ]; then
+	echo N > /sys/module/wakeup/parameters/enable_wlan_ipa_ws
+fi
+if [ -e "/sys/module/wakeup/parameters/enable_wlan_pno_wl_ws" ]; then
+	echo N > /sys/module/wakeup/parameters/enable_wlan_pno_wl_ws
+fi
+if [ -e "/sys/module/wakeup/parameters/enable_wcnss_filter_lock_ws" ]; then
+	echo N > /sys/module/wakeup/parameters/enable_wcnss_filter_lock_ws
 fi
 ## Thermal
 if [ -e /sys/module/msm_thermal ]; then
@@ -567,15 +631,14 @@ chmod 644 /sys/module/workqueue/parameters/power_efficient
 echo Y > /sys/module/workqueue/parameters/power_efficient 
 ## VM
 echo 500 > /proc/sys/vm/dirty_expire_centisecs
-echo 3000 > /proc/sys/vm/dirty_writeback_centisecs
-echo 0 > /proc/sys/vm/oom_kill_allocating_task
-echo 0 > /proc/sys/vm/page-cluster
+echo 6000 > /proc/sys/vm/dirty_writeback_centisecs
+echo 1 > /proc/sys/vm/oom_kill_allocating_task
+echo 3 > /proc/sys/vm/page-cluster
 echo 60 > /proc/sys/vm/swappiness
 echo 100 > /proc/sys/vm/vfs_cache_pressure
-echo 20 > /proc/sys/vm/dirty_ratio
-echo 5 > /proc/sys/vm/dirty_background_ratio
-echo 50 > /proc/sys/vm/overcommit_ratio
-echo 1 > /proc/sys/vm/laptop_mode
+echo 40 > /proc/sys/vm/dirty_ratio
+echo 20 > /proc/sys/vm/dirty_background_ratio
+echo 0 > /proc/sys/vm/overcommit_memory
 echo 4096 > /proc/sys/vm/min_free_kbytes
 echo 64 > /proc/sys/kernel/random/read_wakeup_threshold
 echo 896 > /proc/sys/kernel/random/write_wakeup_threshold
