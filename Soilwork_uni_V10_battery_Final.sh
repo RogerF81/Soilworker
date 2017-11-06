@@ -161,6 +161,8 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 	else
    		if [ -e $string1 ]; then
 			echo "Tweaking HMP Scheduler"
+			echo interactive > $GOV_PATH/scaling_governor
+			chmod 644 /sys/devices/system/cpu/cpu0/cpufreq/interactive/*
 			echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
 			echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
 			echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/ignore_hispeed_on_notif
@@ -223,6 +225,7 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 				echo "PnP detected! Tweaks will be set accordingly"
 				echo 80 1324800:94 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 			fi
+			chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/interactive/*
 		fi
 	fi
 fi
@@ -262,6 +265,8 @@ if [ -d /sys/devices/system/cpu/cpu2/cpufreq ]; then
 		fi
 	else
     		if [ -e $string2 ]; then
+			echo interactive > $GOV_big_PATH/scaling_governor
+			chmod 644 /sys/devices/system/cpu/cpu2/cpufreq/interactive/*
 			echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/max_freq_hysteresis
 			echo 1 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/ignore_hispeed_on_notif
 			echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/boost
@@ -274,7 +279,6 @@ if [ -d /sys/devices/system/cpu/cpu2/cpufreq ]; then
 			echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/enable_prediction
 			if [ "pnp_available" == "false" ]; then
 				echo "interactive will be set on big cluster"
-				echo interactive > $GOV_big_PATH/scaling_governor
 				echo 76 556800:59 652800:74 729600:76 806400:80 883200:74 940800:78 1036800:82 1113600:81 1190400:83 1248000:84 1324800:86 1785600:91 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/target_loads
 				echo 192025 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_slack
 				echo 556800 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/hispeed_freq
@@ -286,6 +290,7 @@ if [ -d /sys/devices/system/cpu/cpu2/cpufreq ]; then
 				echo "PnP detected! Tweaks will be set accordingly"
 				echo 76 1324800:86 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 			fi
+			chmod 444 /sys/devices/system/cpu/cpu2/cpufreq/interactive/*
    		fi
 	fi
 fi
