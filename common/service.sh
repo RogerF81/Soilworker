@@ -183,6 +183,8 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 	else
    		if [ -e $string1 ]; then
 			echo "Tweaking HMP Scheduler"
+			echo interactive > $GOV_PATH/scaling_governor
+			chmod 644 /sys/devices/system/cpu/cpu0/cpufreq/interactive/*
 			echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
 			echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
 			echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/ignore_hispeed_on_notif
@@ -245,6 +247,7 @@ if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
 				echo "PnP detected! Tweaks will be set accordingly"
 				echo 67 1228800:86 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 			fi
+			chmod 444 /sys/devices/system/cpu/cpu0/cpufreq/interactive/*
 		fi
 	fi
 fi
@@ -284,6 +287,8 @@ if [ -d /sys/devices/system/cpu/cpu2/cpufreq ]; then
 		fi
 	else
    		if [ -e $string2 ]; then
+			echo interactive > $GOV_big_PATH/scaling_governor
+			chmod 644 /sys/devices/system/cpu/cpu2/cpufreq/interactive/*
 			echo 40000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/min_sample_time
 			echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/max_freq_hysteresis
 			echo 1 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/ignore_hispeed_on_notif
@@ -297,7 +302,6 @@ if [ -d /sys/devices/system/cpu/cpu2/cpufreq ]; then
 			echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/enable_prediction
 			if [ "pnp_available" == "false" ]; then
 				echo "interactive will be set on big cluster"
-				echo interactive > $GOV_big_PATH/scaling_governor
 				echo 58 556800:58 652800:78 729600:80 806400:84 883200:77 940800:82 1036800:86 1113600:84 1190400:87 1248000:88 1324800:90 1785600:96 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/target_loads
 				echo 178470 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_slack
 				echo 1248000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/hispeed_freq
@@ -308,6 +312,7 @@ if [ -d /sys/devices/system/cpu/cpu2/cpufreq ]; then
 				echo "PnP detected! Tweaks will be set accordingly"
 				echo 58 1248000:88 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 			fi
+			chmod 444 /sys/devices/system/cpu/cpu2/cpufreq/interactive/*
 		fi
 	fi
 fi
